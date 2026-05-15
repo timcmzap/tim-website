@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-
 <nav class="nav">
   <div class="nav__inner">
     <a class="nav__brand" href="index.html">tim<span>.</span></a>
@@ -26,13 +25,11 @@
     </div>
   </div>
 </nav>
-
 <section class="section">
   <div class="container">
     <div class="eyebrow reveal">Projects</div>
     <h1 class="reveal">Things I've helped build.</h1>
     <p class="lead reveal" style="margin-top: 24px;">[PLACEHOLDER — A short paragraph framing what kind of things you build and why. The taste behind the project list.]</p>
-
     <div class="filter-bar reveal" style="margin-top: 48px;" id="project-filters">
       <button data-tag="all" class="active">All</button>
       <button data-tag="web">Web</button>
@@ -40,8 +37,8 @@
       <button data-tag="tools">Tools</button>
       <button data-tag="design">Design</button>
     </div>
-
-  <article class="card reveal" data-tags="web,tools">
+    <div class="grid">
+      <article class="card reveal" data-tags="web,tools">
         <div class="card__tag">Web · Tools</div>
         <h3>Conscious Change</h3>
         <p>A social enterprise making zero-waste products more accesible to students. We also created Scotland's first 'sustainbly themed club night' called Zero Chill.</p>
@@ -51,7 +48,6 @@
           <a href="https://foodanddrink.scotsman.com/food/edinburgh-students-association-first-in-scotland-to-offer-zero-waste-corner-in-shop/" class="card__link" target="_blank" rel="noopener">View →</a>
         </div>
       </article>
-
       <article class="card reveal" data-tags="ai">
         <div class="card__tag">AI / ML</div>
         <h3>e-hum</h3>
@@ -62,7 +58,6 @@
           <a href="#" class="card__link">View →</a>
         </div>
       </article>
-
       <article class="card reveal" data-tags="design">
         <div class="card__tag">Design</div>
         <h3>HALO.eco</h3>
@@ -72,7 +67,6 @@
           <a href="#" class="card__link">View →</a>
         </div>
       </article>
-
       <article class="card reveal" data-tags="web">
         <div class="card__tag">Web</div>
         <h3>Ecofit Homes</h3>
@@ -82,7 +76,6 @@
           <a href="#" class="card__link">View →</a>
         </div>
       </article>
-
       <article class="card reveal" data-tags="tools,ai">
         <div class="card__tag">Tools · AI</div>
         <h3>Groovy EV</h3>
@@ -92,20 +85,18 @@
           <a href="#" class="card__link">View →</a>
         </div>
       </article>
-
       <article class="card reveal" data-tags="design,web">
         <div class="card__tag">Design · Web</div>
         <h3>[PLACEHOLDER project name]</h3>
         <p>[PLACEHOLDER description.]</p>
         <div class="card__footer">
           <span class="chip">CSS</span>
-          <a href="https://foodanddrink.scotsman.com/food/edinburgh-students-association-first-in-scotland-to-offer-zero-waste-corner-in-shop/" class="card__link">View →</a>
+          <a href="#" class="card__link">View →</a>
         </div>
       </article>
     </div>
   </div>
 </section>
-
 <footer class="footer">
   <div class="container footer__inner">
     <div class="footer__meta">© <span data-year></span> Tim Maxwell · hello@timcmaxwell.com</div>
@@ -119,7 +110,6 @@
     </div>
   </div>
 </footer>
-
 <script src="assets/main.js"></script>
 <script>setupFilters("#project-filters", ".grid .card");</script>
 </body>
