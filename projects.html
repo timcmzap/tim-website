@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects · Tim Maxwell</title>
+  <meta name="description" content="Personal projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="index.html">tim<span>.</span></a>
+    <div class="nav__links">
+      <a href="about.html">About</a>
+      <a href="work.html">Work</a>
+      <a href="projects.html">Projects</a>
+      <a href="blog/index.html">Blog</a>
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <div class="eyebrow reveal">Projects</div>
+    <h1 class="reveal">Things I've built.</h1>
+    <p class="lead reveal" style="margin-top: 24px;">[PLACEHOLDER — A short paragraph framing what kind of things you build and why. The taste behind the project list.]</p>
+
+    <div class="filter-bar reveal" style="margin-top: 48px;" id="project-filters">
+      <button data-tag="all" class="active">All</button>
+      <button data-tag="web">Web</button>
+      <button data-tag="ai">AI / ML</button>
+      <button data-tag="tools">Tools</button>
+      <button data-tag="design">Design</button>
+    </div>
+
+    <div class="grid">
+      <article class="card reveal" data-tags="web,tools">
+        <div class="card__tag">Web · Tools</div>
+        <h3>[PLACEHOLDER project name]</h3>
+        <p>[PLACEHOLDER — One or two sentences describing what it does and what made it interesting to build.]</p>
+        <div class="card__footer">
+          <span class="chip">TypeScript</span>
+          <span class="chip">React</span>
+          <a href="#" class="card__link">View →</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tags="ai">
+        <div class="card__tag">AI / ML</div>
+        <h3>[PLACEHOLDER project name]</h3>
+        <p>[PLACEHOLDER description.]</p>
+        <div class="card__footer">
+          <span class="chip">Python</span>
+          <span class="chip">LLMs</span>
+          <a href="#" class="card__link">View →</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tags="design">
+        <div class="card__tag">Design</div>
+        <h3>[PLACEHOLDER project name]</h3>
+        <p>[PLACEHOLDER description.]</p>
+        <div class="card__footer">
+          <span class="chip">Figma</span>
+          <a href="#" class="card__link">View →</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tags="web">
+        <div class="card__tag">Web</div>
+        <h3>[PLACEHOLDER project name]</h3>
+        <p>[PLACEHOLDER description.]</p>
+        <div class="card__footer">
+          <span class="chip">Svelte</span>
+          <a href="#" class="card__link">View →</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tags="tools,ai">
+        <div class="card__tag">Tools · AI</div>
+        <h3>[PLACEHOLDER project name]</h3>
+        <p>[PLACEHOLDER description.]</p>
+        <div class="card__footer">
+          <span class="chip">CLI</span>
+          <a href="#" class="card__link">View →</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-tags="design,web">
+        <div class="card__tag">Design · Web</div>
+        <h3>[PLACEHOLDER project name]</h3>
+        <p>[PLACEHOLDER description.]</p>
+        <div class="card__footer">
+          <span class="chip">CSS</span>
+          <a href="#" class="card__link">View →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__meta">© <span data-year></span> Tim Maxwell · hello@timcmaxwell.com</div>
+    <div class="footer__socials">
+      <a href="https://www.linkedin.com/in/timconstablemaxwell/" aria-label="LinkedIn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+      </a>
+      <a href="mailto:hello@timcmaxwell.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/main.js"></script>
+<script>setupFilters("#project-filters", ".grid .card");</script>
+</body>
+</html>
