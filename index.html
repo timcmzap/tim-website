@@ -4,11 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tim Maxwell</title>
-  <meta name="description" content="Personal site of Tim Maxwell" />
+  <meta name="description" content="Personal site of Tim Maxwell — commercial founder and operator across energy, EVs and carbon." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
+  <style>.reveal { opacity: 1; transform: none; }</style>
 </head>
 <body>
 <nav class="nav">
@@ -25,22 +26,24 @@
     </div>
   </div>
 </nav>
+
 <header class="hero">
   <div class="hero__blob"></div>
   <div class="hero__blob hero__blob--2"></div>
   <div class="container hero__inner">
-    <span class="hero__tag reveal">Nice to meet you!</span>
-    <h1 class="reveal">Hi, I'm Tim</h1>
-    <p class="hero__sub reveal">Recovering co-founder, interested in all things energy and sustainability.</p>
-    <div class="hero__cta reveal">
+    <span class="hero__tag">Nice to meet you!</span>
+    <h1>Hi, I'm Tim</h1>
+    <p class="hero__sub">Recovering co-founder, interested in all things energy and sustainability.</p>
+    <div class="hero__cta">
       <a href="projects.html" class="btn btn--primary">
         See projects
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </a>
-      <a href="blog/index.html" class="btn btn--ghost">Read the blog</a>
+      <a href="about.html" class="btn btn--ghost">About me</a>
     </div>
   </div>
 </header>
+
 <section class="section" id="agile-compare">
   <div class="container">
     <div class="section__header">
@@ -50,8 +53,8 @@
       </div>
       <a href="https://agilecompare.com/" class="section__link" target="_blank" rel="noopener">Open in a new tab →</a>
     </div>
-    <p class="lead reveal" style="margin-bottom: 32px;">A web app I built to compare your Octopus Agile tariff against other market tariffs — using your own live consumption pulled from the Octopus API.</p>
-    <div class="reveal" style="border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-md);">
+    <p class="lead" style="margin-bottom: 32px;">A web app I built to compare your Octopus Agile tariff against other market tariffs — using your own live consumption pulled from the Octopus API.</p>
+    <div style="border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-md);">
       <iframe
         src="https://agilecompare.com/"
         title="Agile Compare — compare your Octopus Agile tariff against the market"
@@ -65,6 +68,7 @@
     </p>
   </div>
 </section>
+
 <section class="section">
   <div class="container">
     <div class="section__header">
@@ -74,65 +78,10 @@
       </div>
       <a href="about.html" class="section__link">Full about page →</a>
     </div>
-    <p class="lead reveal">[PLACEHOLDER — 2–3 sentences that paint a picture. What's your background? What are you most interested in right now? What kind of work gets you out of bed in the morning?]</p>
+    <p class="lead">I'm a commercial founder and operator working across energy, EVs and carbon. Lately I've been consulting for seed-stage cleantech businesses — after a year inside Octopus Electric Vehicles and selling Ecofit Homes to Utilita Energy in 2025.</p>
   </div>
 </section>
-<section class="section">
-  <div class="container">
-    <div class="section__header">
-      <div>
-        <div class="eyebrow">Selected work</div>
-        <h2>Featured projects</h2>
-      </div>
-      <a href="projects.html" class="section__link">All projects →</a>
-    </div>
-    <div class="grid">
-      <article class="card reveal">
-        <div class="card__tag">Project</div>
-        <h3>[PLACEHOLDER project name]</h3>
-        <p>[PLACEHOLDER — one or two sentences on what it does and why you made it.]</p>
-        <div class="card__footer">
-          <span class="chip">TypeScript</span>
-          <span class="chip">Side project</span>
-          <a href="#" class="card__link">View →</a>
-        </div>
-      </article>
-      <article class="card reveal">
-        <div class="card__tag">Project</div>
-        <h3>[PLACEHOLDER project name]</h3>
-        <p>[PLACEHOLDER description — what it is, what was interesting about building it.]</p>
-        <div class="card__footer">
-          <span class="chip">Python</span>
-          <span class="chip">Research</span>
-          <a href="#" class="card__link">View →</a>
-        </div>
-      </article>
-      <article class="card reveal">
-        <div class="card__tag">Project</div>
-        <h3>[PLACEHOLDER project name]</h3>
-        <p>[PLACEHOLDER description.]</p>
-        <div class="card__footer">
-          <span class="chip">Design</span>
-          <a href="#" class="card__link">View →</a>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-<section class="section">
-  <div class="container">
-    <div class="section__header">
-      <div>
-        <div class="eyebrow">Writing</div>
-        <h2>Latest from the blog</h2>
-      </div>
-      <a href="blog/index.html" class="section__link">All posts →</a>
-    </div>
-    <div class="posts" id="latest-posts">
-      <!-- populated by JS from blog/posts/index.json -->
-    </div>
-  </div>
-</section>
+
 <footer class="footer">
   <div class="container footer__inner">
     <div class="footer__meta">© <span data-year></span> Tim Maxwell · hello@timcmaxwell.com</div>
@@ -146,36 +95,7 @@
     </div>
   </div>
 </footer>
+
 <script src="assets/main.js"></script>
-<script>
-  // Load latest 3 posts on homepage
-  fetch("blog/posts/index.json")
-    .then(r => r.json())
-    .then(posts => {
-      const c = document.getElementById("latest-posts");
-      posts.slice(0, 3).forEach(p => {
-        const row = document.createElement("a");
-        row.href = `blog/post.html?slug=${p.slug}`;
-        row.className = "post-row reveal";
-        row.innerHTML = `
-          <div class="post-row__date">${new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
-          <div>
-            <h3 class="post-row__title">${p.title}</h3>
-            <p class="post-row__excerpt">${p.excerpt}</p>
-          </div>
-          <div class="post-row__tags">${p.tags.map(t => `<span class="chip">${t}</span>`).join("")}</div>
-        `;
-        c.appendChild(row);
-      });
-      // Re-observe new reveal elements
-      document.querySelectorAll(".reveal:not(.in)").forEach(el => {
-        const io = new IntersectionObserver((es, ob) => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); ob.unobserve(e.target); } }); });
-        io.observe(el);
-      });
-    })
-    .catch(() => {
-      document.getElementById("latest-posts").innerHTML = '<p style="color:var(--ink-3)">Posts will appear here once the blog index loads.</p>';
-    });
-</script>
 </body>
 </html>
