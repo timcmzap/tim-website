@@ -9,7 +9,23 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
-  <style>.reveal { opacity: 1; transform: none; }</style>
+  <style>
+    .reveal { opacity: 1; transform: none; }
+    .timeline__item--has-logo::before { display: none; }
+    .timeline__logo {
+      position: absolute;
+      left: -46px;
+      top: -2px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: white;
+      padding: 5px;
+      border: 1px solid var(--line);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      object-fit: contain;
+    }
+  </style>
 </head>
 <body>
 
@@ -47,17 +63,20 @@
 
     <h2 style="margin-top: 64px;">Previously</h2>
     <div class="timeline">
-      <div class="timeline__item">
+      <div class="timeline__item timeline__item--has-logo">
+        <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=octopusev.com&sz=128" alt="Octopus Electric Vehicles logo">
         <div class="timeline__date">April 2025 – April 2026</div>
         <div class="timeline__title">Special Projects Manager (Contract) · Octopus Electric Vehicles</div>
         <div class="timeline__desc">Cross-business strategy work, reporting into the executive team.</div>
       </div>
-      <div class="timeline__item">
+      <div class="timeline__item timeline__item--has-logo">
+        <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=utilita.co.uk&sz=128" alt="Utilita Energy logo">
         <div class="timeline__date">September 2022 – March 2025</div>
         <div class="timeline__title">Co-Founder · Ecofit Homes (acquired by Utilita Energy)</div>
         <div class="timeline__desc">Built and sold a UK retrofit data business, acquired by Utilita Energy.</div>
       </div>
-      <div class="timeline__item">
+      <div class="timeline__item timeline__item--has-logo">
+        <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=abatable.com&sz=128" alt="Abatable logo">
         <div class="timeline__date">September 2021 – September 2022</div>
         <div class="timeline__title">Founders Associate · Abatable</div>
         <div class="timeline__desc">Early hire at a Y-Combinator-backed carbon finance platform.</div>
