@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
+  <style>.reveal { opacity: 1; transform: none; }</style>
 </head>
 <body>
 <nav class="nav">
   <div class="nav__inner">
     <a class="nav__brand" href="index.html">tim<span>.</span></a>
     <div class="nav__links">
-      <a href="about.html">About</a>
       <a href="work.html">Work</a>
       <a href="projects.html">Projects</a>
       <a href="blog/index.html">Blog</a>
@@ -27,71 +27,30 @@
 </nav>
 <section class="section">
   <div class="container">
-    <div class="eyebrow reveal">Projects</div>
-    <h1 class="reveal">Things I've helped build.</h1>
-    <p class="lead reveal" style="margin-top: 24px;">[PLACEHOLDER — A short paragraph framing what kind of things you build and why. The taste behind the project list.]</p>
-    <div class="filter-bar reveal" style="margin-top: 48px;" id="project-filters">
-      <button data-tag="all" class="active">All</button>
-      <button data-tag="web">Web</button>
-      <button data-tag="ai">AI / ML</button>
-      <button data-tag="tools">Tools</button>
-      <button data-tag="design">Design</button>
-    </div>
-    <div class="grid">
-      <article class="card reveal" data-tags="web,tools">
-        <div class="card__tag">Web · Tools</div>
+    <div class="eyebrow">Projects</div>
+    <h1>Things I've helped build.</h1>
+    <p class="lead" style="margin-top: 24px;">A couple of side projects across energy, sustainability, and tools I've wanted to exist.</p>
+
+    <div class="grid" style="margin-top: 48px;">
+      <article class="card">
+        <div class="card__tag">Social Enterprise</div>
         <h3>Conscious Change</h3>
         <p>A social enterprise making zero-waste products more accesible to students. We also created Scotland's first 'sustainbly themed club night' called Zero Chill.</p>
         <div class="card__footer">
-          <span class="chip">TypeScript</span>
-          <span class="chip">React</span>
+          <span class="chip">Edinburgh</span>
+          <span class="chip">Sustainability</span>
           <a href="https://foodanddrink.scotsman.com/food/edinburgh-students-association-first-in-scotland-to-offer-zero-waste-corner-in-shop/" class="card__link" target="_blank" rel="noopener">View →</a>
         </div>
       </article>
-      <article class="card reveal" data-tags="ai">
-        <div class="card__tag">AI / ML</div>
-        <h3>e-hum</h3>
-        <p>Named after the 1897 London Electrical Cab Company's "Hummingbirds". Idea of renting, leasing and selling pedal-assisted quadricycles</p>
+
+      <article class="card">
+        <div class="card__tag">Web · Energy</div>
+        <h3>Agile Compare</h3>
+        <p>A web app to compare your Octopus Agile tariff against other market tariffs, using your own live consumption from the Octopus API.</p>
         <div class="card__footer">
-          <span class="chip">Python</span>
-          <span class="chip">LLMs</span>
-          <a href="#" class="card__link">View →</a>
-        </div>
-      </article>
-      <article class="card reveal" data-tags="design">
-        <div class="card__tag">Design</div>
-        <h3>HALO.eco</h3>
-        <p>An environmental employee benefit subscription for profesional services to lend micro-finance (Humanity), offset carbon (Air), plant trees (Land) and offset plastic (Ocean). </p>
-        <div class="card__footer">
-          <span class="chip">Figma</span>
-          <a href="#" class="card__link">View →</a>
-        </div>
-      </article>
-      <article class="card reveal" data-tags="web">
-        <div class="card__tag">Web</div>
-        <h3>Ecofit Homes</h3>
-        <p>Retrofit database for 20 million UK homes. Acquired by Utilita Energy. </p>
-        <div class="card__footer">
-          <span class="chip">Svelte</span>
-          <a href="#" class="card__link">View →</a>
-        </div>
-      </article>
-      <article class="card reveal" data-tags="tools,ai">
-        <div class="card__tag">Tools · AI</div>
-        <h3>Groovy EV</h3>
-        <p>[PLACEHOLDER description.]</p>
-        <div class="card__footer">
-          <span class="chip">CLI</span>
-          <a href="#" class="card__link">View →</a>
-        </div>
-      </article>
-      <article class="card reveal" data-tags="design,web">
-        <div class="card__tag">Design · Web</div>
-        <h3>[PLACEHOLDER project name]</h3>
-        <p>[PLACEHOLDER description.]</p>
-        <div class="card__footer">
-          <span class="chip">CSS</span>
-          <a href="#" class="card__link">View →</a>
+          <span class="chip">Octopus API</span>
+          <span class="chip">Lovable</span>
+          <a href="https://agilecompare.com/" class="card__link" target="_blank" rel="noopener">View →</a>
         </div>
       </article>
     </div>
@@ -111,6 +70,5 @@
   </div>
 </footer>
 <script src="assets/main.js"></script>
-<script>setupFilters("#project-filters", ".grid .card");</script>
 </body>
 </html>
