@@ -24,6 +24,19 @@
       border: 1px solid var(--line);
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       object-fit: contain;
+      transition: transform 0.2s ease;
+    }
+    .timeline__logo-link:hover .timeline__logo {
+      transform: scale(1.08);
+    }
+    .timeline__company-link {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      transition: opacity 0.2s ease;
+    }
+    .timeline__company-link:hover {
+      opacity: 0.75;
     }
   </style>
 </head>
@@ -64,41 +77,29 @@
     <h2 style="margin-top: 64px;">Previously</h2>
     <div class="timeline">
       <div class="timeline__item timeline__item--has-logo">
-        <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=octopusev.com&sz=128" alt="Octopus Electric Vehicles logo">
+        <a class="timeline__logo-link" href="https://octopusev.com" target="_blank" rel="noopener" aria-label="Octopus Electric Vehicles">
+          <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=octopusev.com&sz=128" alt="Octopus Electric Vehicles logo">
+        </a>
         <div class="timeline__date">April 2025 – April 2026</div>
-        <div class="timeline__title">Special Projects Manager (Contract) · Octopus Electric Vehicles</div>
+        <div class="timeline__title">Special Projects Manager (Contract) · <a class="timeline__company-link" href="https://octopusev.com" target="_blank" rel="noopener">Octopus Electric Vehicles</a></div>
         <div class="timeline__desc">Cross-business strategy work, reporting into the executive team.</div>
       </div>
       <div class="timeline__item timeline__item--has-logo">
-        <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=utilita.co.uk&sz=128" alt="Utilita Energy logo">
+        <a class="timeline__logo-link" href="https://utilityweek.co.uk/utilita-acquires-tech-company-to-provide-property-snapshot-for-customers/" target="_blank" rel="noopener" aria-label="Utility Week article about Utilita acquiring Ecofit">
+          <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=utilita.co.uk&sz=128" alt="Utilita Energy logo">
+        </a>
         <div class="timeline__date">September 2022 – March 2025</div>
-        <div class="timeline__title">Co-Founder · Ecofit Homes (acquired by Utilita Energy)</div>
+        <div class="timeline__title">Co-Founder · <a class="timeline__company-link" href="https://utilityweek.co.uk/utilita-acquires-tech-company-to-provide-property-snapshot-for-customers/" target="_blank" rel="noopener">Ecofit Homes (acquired by Utilita Energy)</a></div>
         <div class="timeline__desc">Built and sold a UK retrofit data business, acquired by Utilita Energy.</div>
       </div>
       <div class="timeline__item timeline__item--has-logo">
-        <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=abatable.com&sz=128" alt="Abatable logo">
+        <a class="timeline__logo-link" href="https://abatable.com" target="_blank" rel="noopener" aria-label="Abatable">
+          <img class="timeline__logo" src="https://www.google.com/s2/favicons?domain=abatable.com&sz=128" alt="Abatable logo">
+        </a>
         <div class="timeline__date">September 2021 – September 2022</div>
-        <div class="timeline__title">Founders Associate · Abatable</div>
+        <div class="timeline__title">Founders Associate · <a class="timeline__company-link" href="https://abatable.com" target="_blank" rel="noopener">Abatable</a></div>
         <div class="timeline__desc">Early hire at a Y-Combinator-backed carbon finance platform.</div>
       </div>
     </div>
   </div>
 </section>
-
-<footer class="footer">
-  <div class="container footer__inner">
-    <div class="footer__meta">© <span data-year></span> Tim Maxwell · hello@timcmaxwell.com</div>
-    <div class="footer__socials">
-      <a href="https://www.linkedin.com/in/timconstablemaxwell/" aria-label="LinkedIn" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
-      </a>
-      <a href="mailto:hello@timcmaxwell.com" aria-label="Email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-      </a>
-    </div>
-  </div>
-</footer>
-
-<script src="assets/main.js"></script>
-</body>
-</html>
