@@ -31,17 +31,9 @@
   <div class="container">
     <div class="eyebrow reveal">Writing</div>
     <h1 class="reveal">Blog &amp; research</h1>
-    <p class="lead reveal" style="margin-top: 24px;">[PLACEHOLDER — A short paragraph framing what you write about and why.]</p>
+    <p class="lead reveal" style="margin-top: 24px;">Interactive explainers on the UK electricity market — the meters, settlement reforms and rules quietly reshaping how power is bought and sold.</p>
 
-    <div class="filter-bar reveal" style="margin-top: 48px;" id="blog-filters">
-      <button data-tag="all" class="active">All</button>
-      <button data-tag="essay">Essays</button>
-      <button data-tag="research">Research</button>
-      <button data-tag="notes">Notes</button>
-      <button data-tag="interactive">Interactive</button>
-    </div>
-
-    <div class="posts" id="post-list">
+    <div class="posts reveal" id="post-list" style="margin-top: 48px;">
       <p style="color: var(--ink-3)">Loading posts…</p>
     </div>
   </div>
@@ -73,14 +65,12 @@
         const row = document.createElement("a");
         row.href = p.url ? p.url : `post.html?slug=${p.slug}`;
         row.className = "post-row reveal";
-        row.dataset.tags = p.tags.join(",");
         row.innerHTML = `
           <div class="post-row__date">${new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
           <div>
             <h3 class="post-row__title">${p.title}</h3>
             <p class="post-row__excerpt">${p.excerpt}</p>
           </div>
-          <div class="post-row__tags">${p.tags.map(t => `<span class="chip">${t}</span>`).join("")}</div>
         `;
         c.appendChild(row);
       });
@@ -88,7 +78,6 @@
         const io = new IntersectionObserver((es, ob) => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); ob.unobserve(e.target); } }); });
         io.observe(el);
       });
-      setupFilters("#blog-filters", "#post-list .post-row");
     })
     .catch(() => {
       document.getElementById("post-list").innerHTML = '<p style="color:var(--ink-3)">Could not load posts. If you opened this file directly, run a local server (see README).</p>';
