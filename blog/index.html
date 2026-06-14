@@ -4,12 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Blog · Tim Maxwell</title>
-  <meta name="description" content="Notes, essays, and research on energy, EVs and carbon." />
+  <meta name="description" content="Notes, essays, and research." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/styles.css" />
-  <style>.reveal { opacity: 1; transform: none; }</style>
 </head>
 <body>
 
@@ -30,22 +29,20 @@
 
 <section class="section">
   <div class="container">
-    <div class="eyebrow">Writing</div>
-    <h1>Blog &amp; research</h1>
-    <p class="lead" style="margin-top: 24px;">Notes and the occasional deeper dive on energy, EVs, and carbon.</p>
+    <div class="eyebrow reveal">Writing</div>
+    <h1 class="reveal">Blog &amp; research</h1>
+    <p class="lead reveal" style="margin-top: 24px;">[PLACEHOLDER — A short paragraph framing what you write about and why.]</p>
 
-    <div class="posts" style="margin-top: 40px;">
-      <a href="meter-top-trumps.html" class="post-row">
-        <div class="post-row__date">June 2026</div>
-        <div>
-          <h3 class="post-row__title">Meter Top Trumps: which meter survives MHHS?</h3>
-          <p class="post-row__excerpt">A century of UK electricity meters as an interactive timeline and card game — from the spinning disc to SMETS2, and what Market-wide Half-Hourly Settlement means for each of them.</p>
-        </div>
-        <div class="post-row__tags">
-          <span class="chip">energy</span>
-          <span class="chip">interactive</span>
-        </div>
-      </a>
+    <div class="filter-bar reveal" style="margin-top: 48px;" id="blog-filters">
+      <button data-tag="all" class="active">All</button>
+      <button data-tag="essay">Essays</button>
+      <button data-tag="research">Research</button>
+      <button data-tag="notes">Notes</button>
+      <button data-tag="interactive">Interactive</button>
+    </div>
+
+    <div class="posts" id="post-list">
+      <p style="color: var(--ink-3)">Loading posts…</p>
     </div>
   </div>
 </section>
@@ -65,5 +62,38 @@
 </footer>
 
 <script src="../assets/main.js"></script>
+<script>
+  fetch("posts/index.json")
+    .then(r => r.json())
+    .then(posts => {
+      const c = document.getElementById("post-list");
+      c.innerHTML = "";
+      posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+      posts.forEach(p => {
+        const row = document.createElement("a");
+        row.href = p.url ? p.url : `post.html?slug=${p.slug}`;
+        row.className = "post-row reveal";
+        row.dataset.tags = p.tags.join(",");
+        row.innerHTML = `
+          <div class="post-row__date">${new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+          <div>
+            <h3 class="post-row__title">${p.title}</h3>
+            <p class="post-row__excerpt">${p.excerpt}</p>
+          </div>
+          <div class="post-row__tags">${p.tags.map(t => `<span class="chip">${t}</span>`).join("")}</div>
+        `;
+        c.appendChild(row);
+      });
+      document.querySelectorAll(".reveal:not(.in)").forEach(el => {
+        const io = new IntersectionObserver((es, ob) => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); ob.unobserve(e.target); } }); });
+        io.observe(el);
+      });
+      setupFilters("#blog-filters", "#post-list .post-row");
+    })
+    .catch(() => {
+      document.getElementById("post-list").innerHTML = '<p style="color:var(--ink-3)">Could not load posts. If you opened this file directly, run a local server (see README).</p>';
+    });
+</script>
+
 </body>
 </html>

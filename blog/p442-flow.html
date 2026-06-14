@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>P442, before and after: how licence-exempt supply finally adds up · Tim Maxwell</title>
+  <meta name="description" content="An interactive before/after look at BSC modification P442 — the ESNA role, half-hourly time-matching, and the EMR levies that licence-exempt volumes now avoid." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .reveal { opacity: 1; transform: none; }
+    .post-wrap { max-width: 680px; margin: 0 auto; }
+    .post-wrap p { font-size: 1.1rem; line-height: 1.75; }
+    .post-wrap h2 { margin-top: 1.9em; }
+
+    /* ---------- Flow diagram ---------- */
+    .p442 { margin: 36px 0 8px; }
+    .p442__switch {
+      display: inline-flex; padding: 4px; gap: 4px;
+      background: var(--bg-2); border: 1px solid var(--line);
+      border-radius: 999px; margin: 0 auto 8px;
+    }
+    .p442__switch-wrap { text-align: center; }
+    .p442__switch button {
+      font-family: var(--font-body); font-size: 0.92rem; font-weight: 500;
+      padding: 8px 20px; border-radius: 999px; cursor: pointer;
+      background: transparent; color: var(--ink-2); border: 0;
+      transition: all 0.2s var(--ease);
+    }
+    .p442__switch button.is-on { background: var(--accent); color: #fff; }
+
+    .flow {
+      position: relative; width: 100%; max-width: 760px; margin: 18px auto 0;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .flow__stage { position: relative; width: 760px; height: 470px; margin: 0 auto; }
+    .flow__svg { position: absolute; inset: 0; width: 760px; height: 470px; z-index: 0; }
+    .node {
+      position: absolute; z-index: 2; box-sizing: border-box;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius-sm); padding: 12px 14px;
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease), border-color 0.3s var(--ease);
+    }
+    .node__role { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+    .node__name { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--ink); line-height: 1.2; margin-top: 2px; }
+    .node__sub { font-size: 0.8rem; color: var(--ink-2); margin-top: 4px; line-height: 1.35; }
+
+    .node--gen      { left: 20px;  top: 188px; width: 178px; border-left: 4px solid #1d9e75; }
+    .node--esna     { left: 291px; top: 184px; width: 178px; border-left: 4px solid var(--accent); }
+    .node--consumer { left: 562px; top: 188px; width: 178px; }
+    .node--supplier { left: 562px; top: 24px;  width: 178px; border-left: 4px solid #8A7D70; }
+    .node--bsc      { left: 291px; top: 360px; width: 178px; border-left: 4px solid var(--accent); }
+    .node--emr {
+      left: 588px; top: 120px; width: 150px; padding: 8px 12px;
+      background: var(--accent-soft); border-color: var(--accent);
+    }
+    .node--emr .node__name { font-size: 0.86rem; }
+
+    /* after-only + before-only visibility by mode */
+    .flow__stage[data-mode="before"] .after-only { opacity: 0; pointer-events: none; transform: translateY(8px); }
+    .flow__stage[data-mode="after"]  .before-only { opacity: 0; pointer-events: none; }
+    .arrow { transition: opacity 0.4s var(--ease); }
+    .flow__stage[data-mode="before"] .arrow.after-only { opacity: 0; }
+    .flow__stage[data-mode="after"]  .arrow.before-only { opacity: 0; }
+
+    .arrow-label {
+      font-family: var(--font-mono); font-size: 11px; fill: var(--ink-2);
+    }
+    .arrow-label--exempt { fill: #1d9e75; font-weight: 600; }
+    .arrow-label--levied { fill: #b06a1d; }
+
+    /* ---------- Ledger ---------- */
+    .ledger {
+      max-width: 620px; margin: 22px auto 0;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius-md); padding: 6px 22px 18px;
+    }
+    .ledger__row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .ledger__row:last-child { border-bottom: 0; }
+    .ledger__label { font-size: 0.92rem; color: var(--ink-2); }
+    .ledger__val { font-family: var(--font-mono); font-size: 1.02rem; font-weight: 500; color: var(--ink); transition: color 0.3s var(--ease); }
+    .ledger__val.good { color: #1d9e75; }
+    .ledger__val.bad  { color: #b06a1d; }
+    .ledger__caption { font-size: 0.84rem; color: var(--ink-3); margin: 12px 0 0; }
+    .ledger__head { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); padding-top: 14px; }
+
+    .legend { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin: 14px 0 0; font-size: 0.82rem; color: var(--ink-2); }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .legend i { width: 22px; height: 3px; border-radius: 2px; display: inline-block; }
+
+    .callout {
+      max-width: 680px; margin: 28px auto; padding: 16px 20px;
+      background: var(--bg-2); border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm); font-size: 0.98rem; color: var(--ink-2);
+    }
+    .callout strong { color: var(--ink); }
+    .hint { text-align: center; font-size: 0.86rem; color: var(--ink-3); margin-top: 14px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="../index.html">tim<span>.</span></a>
+    <div class="nav__links">
+      <a href="../about.html">About</a>
+      <a href="../work.html">Work</a>
+      <a href="../projects.html">Projects</a>
+      <a href="index.html">Blog</a>
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <p style="text-align:center;"><a href="index.html" style="color: var(--ink-3); font-family: var(--font-mono); font-size: 0.88rem;">← All posts</a></p>
+
+    <div class="post-wrap">
+      <div class="eyebrow" style="text-align:center;">Blog · Energy markets</div>
+      <h1 style="text-align:center;">P442, before and after: how licence-exempt supply finally adds up</h1>
+      <p class="post-meta" style="text-align:center; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.85rem;">June 2026 · 6 min read · interactive</p>
+
+      <p>For two decades, licence-exempt supply was a good idea the settlement system couldn't actually carry. The Class A exemption let a small generator supply a local consumer without a supply licence — but inside the Balancing and Settlement Code there was no clean way to split a single SVA metering system's volume into the part that was genuinely exempt and the part that was licensable. So the locally-matched volume sat in the same bucket as everything else, exposed to the supplier-borne charges that fund Electricity Market Reform.</p>
+
+      <p>BSC modification <strong>P442 — "Reporting chargeable volumes for exempt and licensed supply"</strong> — closes that gap. It introduces a qualified third-party role, the <strong>Exempt Supply Notification Agent (ESNA)</strong>, that time-matches generation against consumption in each half-hour and reports the exempt volume into central settlement. The matched volume is then excluded from EMR levies — Contracts for Difference and the Capacity Market — and the economics of local supply finally close.</p>
+
+      <p>The change is easiest to see as a picture. Toggle between the two states below.</p>
+    </div>
+
+    <div class="p442">
+      <div class="p442__switch-wrap">
+        <div class="p442__switch" role="tablist" aria-label="Before or after P442">
+          <button id="btn-before" role="tab">Before P442</button>
+          <button id="btn-after" class="is-on" role="tab" aria-selected="true">After P442</button>
+        </div>
+      </div>
+
+      <div class="flow">
+        <div class="flow__stage" id="stage" data-mode="after">
+          <svg class="flow__svg" viewBox="0 0 760 470" aria-hidden="true">
+            <defs>
+              <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0 0 L9 4.5 L0 9 z" fill="var(--ink-3)"/>
+              </marker>
+              <marker id="ah-green" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0 0 L9 4.5 L0 9 z" fill="#1d9e75"/>
+              </marker>
+              <marker id="ah-amber" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0 0 L9 4.5 L0 9 z" fill="#b06a1d"/>
+              </marker>
+            </defs>
+
+            <!-- BEFORE: generator straight to consumer, whole volume on the levied route -->
+            <g class="arrow before-only">
+              <path d="M200 232 L556 234" fill="none" stroke="#b06a1d" stroke-width="3" marker-end="url(#ah-amber)"/>
+              <text class="arrow-label arrow-label--levied" x="300" y="222">on-site supply — no exempt split</text>
+            </g>
+
+            <!-- AFTER: generator -> ESNA -> consumer (exempt, green) -->
+            <g class="arrow after-only">
+              <path d="M200 232 L289 232" fill="none" stroke="#1d9e75" stroke-width="3" marker-end="url(#ah-green)"/>
+              <path d="M471 232 L556 232" fill="none" stroke="#1d9e75" stroke-width="3" marker-end="url(#ah-green)"/>
+              <text class="arrow-label arrow-label--exempt" x="486" y="222">exempt — no EMR levy</text>
+              <!-- ESNA report down to BSC -->
+              <path d="M380 318 L380 358" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+              <text class="arrow-label" x="392" y="342">exempt-volume report</text>
+            </g>
+
+            <!-- BOTH: supplier residual top-up into consumer, carrying EMR levies -->
+            <g class="arrow">
+              <path d="M651 108 L651 184" fill="none" stroke="#b06a1d" stroke-width="3" marker-end="url(#ah-amber)"/>
+              <text class="arrow-label arrow-label--levied" x="540" y="150" text-anchor="end">residual</text>
+            </g>
+          </svg>
+
+          <div class="node node--gen">
+            <div class="node__role">Generator · sub-5MW</div>
+            <div class="node__name">Local renewable</div>
+            <div class="node__sub">Community solar / wind, embedded or private-wire</div>
+          </div>
+
+          <div class="node node--esna after-only">
+            <div class="node__role">New role · qualified</div>
+            <div class="node__name">ESNA</div>
+            <div class="node__sub">Time-matches gen v demand each half-hour; reports exempt volume</div>
+          </div>
+
+          <div class="node node--consumer">
+            <div class="node__role">Offtaker</div>
+            <div class="node__name">Business consumer</div>
+            <div class="node__sub">Sleeved / behind-the-meter PPA</div>
+          </div>
+
+          <div class="node node--supplier">
+            <div class="node__role">Licensed</div>
+            <div class="node__name">Supplier</div>
+            <div class="node__sub">Provides residual top-up & balancing</div>
+          </div>
+
+          <div class="node node--emr">
+            <div class="node__role">EMR levies</div>
+            <div class="node__name">CfD + Capacity Market</div>
+            <div class="node__sub" id="emr-scope">applies to residual only</div>
+          </div>
+
+          <div class="node node--bsc after-only">
+            <div class="node__role">Central settlement</div>
+            <div class="node__name">BSC / EMR delivery body</div>
+            <div class="node__sub">Receives the validated exempt split</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span><i style="background:#1d9e75"></i> exempt, time-matched volume</span>
+        <span><i style="background:#b06a1d"></i> volume bearing EMR levies</span>
+        <span><i style="background:var(--accent)"></i> P442 data flow</span>
+      </div>
+
+      <div class="ledger" id="ledger">
+        <div class="ledger__head" id="ledger-head">After P442 — one half-hour</div>
+        <div class="ledger__row"><span class="ledger__label">Generation in the half-hour</span><span class="ledger__val">2.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">Consumer demand</span><span class="ledger__val">3.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">Reportable as licence-exempt</span><span class="ledger__val" id="l-exempt">2.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">Volume bearing EMR levies</span><span class="ledger__val" id="l-levied">1.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">Indicative levy avoided <span style="color:var(--ink-3)">(~£60/MWh)</span></span><span class="ledger__val" id="l-saving">£120</span></div>
+        <p class="ledger__caption" id="l-caption">Only the 1 MWh residual top-up from the licensed supplier carries CfD and Capacity Market charges; the 2 MWh time-matched within the half-hour is exempt.</p>
+      </div>
+      <p class="hint">Figures are illustrative for a single half-hour. The ~£60/MWh is an indicative upper bound on avoided supplier-borne charges, shared between generator and consumer.</p>
+    </div>
+
+    <div class="post-wrap">
+      <h2>The mechanic: matched within the half-hour</h2>
+
+      <p>The exemption is deliberately strict. Only electricity that is both generated and consumed <em>within the same half-hourly settlement period</em> counts as licence-exempt — there is no carrying forward, no daily netting, no notional matching across periods. In each settlement period the exempt volume is, in effect, the minimum of generation and demand behind the boundary, capped by the Class A threshold.</p>
+
+      <p>That is what the ESNA exists to compute. It validates the half-hourly generation and consumption data (from the HHDC or supplier), calculates the licensed-versus-exempt split, and submits the exempt volumes into central BSC systems so the EMR delivery body charges levies only on the licensed remainder. Crucially, an ESNA must go through a qualification process, which is what replaces the old manual, Elexon-administered handling and gives counterparties confidence the numbers are auditable.</p>
+
+      <div class="callout">
+        <strong>Class A, briefly.</strong> The small-supplier exemption applies where total supply is no more than <strong>5MW</strong>, of which no more than <strong>2.5MW</strong> may go to domestic consumers. It is technology-neutral, needs no pre-approval (operators self-assess), and can sit alongside generation and distribution licence exemptions.
+      </div>
+
+      <h2>What it actually enables</h2>
+
+      <p>Strip away the settlement plumbing and P442 does one commercially significant thing: it lets the locally-matched volume escape charges that only ever applied to licensed suppliers. On the avoided EMR levies alone — the CfD Supplier Obligation and the Capacity Market Supplier Charge, plus other supplier-borne policy costs — the saving can run to roughly £60/MWh, value that can be split between the generator and the offtaker.</p>
+
+      <p>That reshapes the route to market for a specific class of project. Sub-5MW solar, onshore wind, hydro and anaerobic digestion, commercial rooftop, community schemes, and private-wire or embedded sites can now contract directly with a business consumer through a <strong>corporate sleeved PPA</strong> without the exempt volume being penalised, and without the disproportionate reporting burden that previously deterred smaller players. For the generator it is a higher, time-stamped price; for the corporate buyer it is verifiable clean supply aligned to actual generation periods; for licensed suppliers it is a framework to integrate time-matching and settle the residual within existing contracts.</p>
+
+      <h2>Where it stops</h2>
+
+      <p>P442 is a settlement and reporting reform, not a new retail market. The exemption is bounded by the 5MW Class A limit and the half-hourly matching test, so it favours co-located or closely-coupled generation and demand rather than diffuse peer-to-peer trading across the network. Anything that isn't matched in-period is simply balanced through a normal retail supply contract, with the usual charges. The win is narrow but real: it removes the specific administrative and cost blockers that kept licence-exempt supply sub-scale.</p>
+
+      <h2>Status</h2>
+
+      <p>Ofgem approved P442 in May 2024, with implementation through the February 2025 BSC release; the first ESNAs were accredited over the course of 2025. In January 2026 DESNZ refreshed its Class A supply-exemption guidance to align with the change, clarifying the thresholds and confirming that operators self-assess against the statutory criteria under the Electricity Act 1989 and the Class Exemptions Order 2001. The combination — a working settlement route plus clearer guidance — is what moves licence-exempt, time-matched supply from niche to genuinely bankable.</p>
+
+      <p style="color: var(--ink-3); font-size: 0.95rem;">Working on a sleeved PPA or community-supply structure and want to compare notes on the settlement mechanics? <a href="mailto:hello@timcmaxwell.com" style="color: var(--accent);">Drop me a line</a>.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__meta">© <span data-year></span> Tim Maxwell · hello@timcmaxwell.com</div>
+    <div class="footer__socials">
+      <a href="https://www.linkedin.com/in/timconstablemaxwell/" aria-label="LinkedIn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+      </a>
+      <a href="mailto:hello@timcmaxwell.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var bBefore = document.getElementById('btn-before');
+  var bAfter = document.getElementById('btn-after');
+
+  var DATA = {
+    before: {
+      head: 'Before P442 — one half-hour',
+      exempt: '0.0 MWh',
+      levied: '3.0 MWh',
+      saving: '£0',
+      emrScope: 'applies to full volume',
+      exemptCls: 'bad',
+      caption: 'With no clean exempt split, the locally-matched 2 MWh stays exposed to supplier-borne EMR charges along with the residual — the whole 3 MWh effectively sits on the levied route.'
+    },
+    after: {
+      head: 'After P442 — one half-hour',
+      exempt: '2.0 MWh',
+      levied: '1.0 MWh',
+      saving: '£120',
+      emrScope: 'applies to residual only',
+      exemptCls: 'good',
+      caption: 'Only the 1 MWh residual top-up from the licensed supplier carries CfD and Capacity Market charges; the 2 MWh time-matched within the half-hour is exempt.'
+    }
+  };
+
+  var lExempt = document.getElementById('l-exempt');
+  var lLevied = document.getElementById('l-levied');
+  var lSaving = document.getElementById('l-saving');
+  var lCaption = document.getElementById('l-caption');
+  var lHead = document.getElementById('ledger-head');
+  var emrScope = document.getElementById('emr-scope');
+
+  function setMode(mode) {
+    var d = DATA[mode];
+    stage.setAttribute('data-mode', mode);
+    bAfter.classList.toggle('is-on', mode === 'after');
+    bBefore.classList.toggle('is-on', mode === 'before');
+    bAfter.setAttribute('aria-selected', mode === 'after');
+    bBefore.setAttribute('aria-selected', mode === 'before');
+
+    lHead.textContent = d.head;
+    lExempt.textContent = d.exempt;
+    lExempt.className = 'ledger__val ' + d.exemptCls;
+    lLevied.textContent = d.levied;
+    lLevied.className = 'ledger__val bad';
+    lSaving.textContent = d.saving;
+    lSaving.className = 'ledger__val ' + (mode === 'after' ? 'good' : '');
+    lCaption.textContent = d.caption;
+    emrScope.textContent = d.emrScope;
+  }
+
+  bBefore.addEventListener('click', function () { setMode('before'); });
+  bAfter.addEventListener('click', function () { setMode('after'); });
+  setMode('after');
+})();
+</script>
+</body>
+</html>

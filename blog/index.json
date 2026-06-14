@@ -1,23 +1,52 @@
 [
   {
+    "slug": "meter-top-trumps",
+    "title": "Meter Top Trumps: which meter survives MHHS?",
+    "date": "2026-06-14",
+    "tags": [
+      "energy",
+      "interactive"
+    ],
+    "excerpt": "A century of UK electricity meters as an interactive timeline and card game — from the spinning disc to SMETS2, and what Market-wide Half-Hourly Settlement means for each of them.",
+    "url": "meter-top-trumps.html"
+  },
+  {
+    "slug": "p442-flow",
+    "title": "P442, before and after: how licence-exempt supply finally adds up",
+    "date": "2026-06-13",
+    "tags": [
+      "energy",
+      "interactive"
+    ],
+    "excerpt": "An interactive before/after walk through BSC modification P442 — the ESNA role, half-hourly time-matching, and the EMR levies that locally-matched volumes now avoid.",
+    "url": "p442-flow.html"
+  },
+  {
     "slug": "hello-world",
     "title": "Hello, world — and why I started writing here",
     "date": "2026-05-15",
-    "tags": ["essay", "notes"],
+    "tags": [
+      "essay",
+      "notes"
+    ],
     "excerpt": "A first post about the kind of thing I want this blog to be."
   },
   {
     "slug": "a-research-note",
     "title": "A short research note on something I've been thinking about",
     "date": "2026-04-22",
-    "tags": ["research"],
+    "tags": [
+      "research"
+    ],
     "excerpt": "An example research-style post with code blocks and references."
   },
   {
     "slug": "things-i-learned",
     "title": "Things I learned this month",
     "date": "2026-03-30",
-    "tags": ["notes"],
+    "tags": [
+      "notes"
+    ],
     "excerpt": "A monthly notes post — small ideas, links, things I want to remember."
   }
 ]
