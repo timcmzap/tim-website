@@ -1,0 +1,23 @@
+[
+  {
+    "slug": "hello-world",
+    "title": "Hello, world — and why I started writing here",
+    "date": "2026-05-15",
+    "tags": ["essay", "notes"],
+    "excerpt": "A first post about the kind of thing I want this blog to be."
+  },
+  {
+    "slug": "a-research-note",
+    "title": "A short research note on something I've been thinking about",
+    "date": "2026-04-22",
+    "tags": ["research"],
+    "excerpt": "An example research-style post with code blocks and references."
+  },
+  {
+    "slug": "things-i-learned",
+    "title": "Things I learned this month",
+    "date": "2026-03-30",
+    "tags": ["notes"],
+    "excerpt": "A monthly notes post — small ideas, links, things I want to remember."
+  }
+]

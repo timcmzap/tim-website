@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meter Top Trumps: which meter survives MHHS? · Tim Maxwell</title>
+  <meta name="description" content="An interactive card game through the UK's electricity meters — and what Market-wide Half-Hourly Settlement means for each of them." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .reveal { opacity: 1; transform: none; }
+    .post-wrap { max-width: 680px; margin: 0 auto; }
+    .post-wrap p { font-size: 1.1rem; line-height: 1.75; }
+
+    .tt { margin: 40px 0; }
+    .tt__bar {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: space-between; align-items: center;
+      background: var(--bg-2); border-radius: var(--radius-md);
+      padding: 14px 20px; margin-bottom: 20px;
+      font-family: var(--font-mono); font-size: 0.85rem;
+    }
+    .tt__score b { color: var(--accent); }
+    .tt__turn { color: var(--ink-2); }
+    .tt__arena {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 620px) { .tt__arena { grid-template-columns: 1fr; } }
+    .tt__card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius-md); overflow: hidden;
+    }
+    .tt__card--cpu { opacity: 1; }
+    .tt__portrait {
+      padding: 24px; display: flex; align-items: center; gap: 14px;
+      color: #fff;
+    }
+    .tt__portrait svg { width: 44px; height: 44px; flex-shrink: 0; }
+    .tt__pt-text { line-height: 1.2; }
+    .tt__nick { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; }
+    .tt__name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+    .tt__era { font-size: 0.8rem; color: var(--ink-3); padding: 10px 20px 0; font-family: var(--font-mono); }
+    .tt__blurb { font-size: 0.92rem; color: var(--ink-2); padding: 6px 20px 12px; }
+    .tt__stats { list-style: none; margin: 0; padding: 0 14px 14px; }
+    .tt__stat {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; text-align: left;
+      padding: 11px 12px; margin: 4px 0;
+      background: var(--bg-2); border: 1px solid transparent;
+      border-radius: var(--radius-sm); cursor: pointer;
+      font-family: var(--font-body); font-size: 0.95rem; color: var(--ink);
+      transition: all 0.15s ease;
+    }
+    .tt__stat:hover:not(:disabled) { border-color: var(--accent); transform: translateX(2px); }
+    .tt__stat:disabled { cursor: default; }
+    .tt__stat-val { font-family: var(--font-mono); font-weight: 500; }
+    .tt__stat.is-pick { background: var(--accent-soft); border-color: var(--accent); }
+    .tt__stat.is-win .tt__stat-val { color: #1d9e75; }
+    .tt__stat.is-lose .tt__stat-val { color: #e24b4a; }
+    .tt__back {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 360px; text-align: center; padding: 24px;
+      background: repeating-linear-gradient(45deg, var(--bg-2), var(--bg-2) 12px, var(--surface) 12px, var(--surface) 24px);
+    }
+    .tt__back-mark { font-family: var(--font-display); font-weight: 700; font-size: 2rem; color: var(--accent); }
+    .tt__back-sub { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-3); margin-top: 6px; }
+    .tt__msg {
+      text-align: center; font-family: var(--font-display); font-weight: 600;
+      font-size: 1.1rem; margin: 20px 0 8px; min-height: 1.4em;
+    }
+    .tt__msg.win { color: #1d9e75; }
+    .tt__msg.lose { color: #e24b4a; }
+    .tt__msg.draw { color: var(--ink-2); }
+    .tt__controls { text-align: center; margin-top: 8px; }
+    .tt-btn {
+      font-family: var(--font-body); font-size: 0.98rem; font-weight: 500;
+      padding: 11px 22px; border-radius: 999px; cursor: pointer;
+      background: var(--accent); color: #fff; border: 1px solid var(--accent);
+      transition: transform 0.2s ease;
+    }
+    .tt-btn:hover { transform: translateY(-2px); }
+    .tt-btn--ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+    .tt__hint { text-align: center; font-size: 0.88rem; color: var(--ink-3); margin-top: 12px; }
+
+    .tt-index { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 32px 0; }
+    .tt-index__card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
+    .tt-index__head { padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .tt-index__head svg { width: 30px; height: 30px; }
+    .tt-index__body { padding: 14px 18px; }
+    .tt-index__verdict { font-size: 0.92rem; color: var(--ink-2); }
+    .tt-index__verdict strong { color: var(--ink); }
+
+    /* ---------- Evolution timeline ---------- */
+    .evo { margin: 28px 0 40px; }
+    .evo__track {
+      display: flex; gap: 0; align-items: stretch;
+      overflow-x: auto; padding: 8px 4px 18px;
+      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    }
+    .evo__node {
+      position: relative; flex: 1 1 0; min-width: 116px;
+      scroll-snap-align: center;
+      background: transparent; border: 0; cursor: pointer;
+      padding: 0 6px; text-align: center; color: var(--ink);
+      font-family: var(--font-body);
+    }
+    .evo__node::before {
+      content: ""; position: absolute; top: 27px; left: 0; right: 0;
+      height: 2px; background: var(--line); z-index: 0;
+    }
+    .evo__node:first-child::before { left: 50%; }
+    .evo__node:last-child::before { right: 50%; }
+    .evo__dot {
+      position: relative; z-index: 1; margin: 0 auto 10px;
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--line);
+      transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+    }
+    .evo__dot svg { width: 30px; height: 30px; }
+    .evo__node:hover .evo__dot { transform: translateY(-3px) scale(1.05); }
+    .evo__node.is-active .evo__dot { box-shadow: 0 0 0 3px var(--accent); transform: translateY(-3px) scale(1.08); }
+    .evo__year { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); font-weight: 500; }
+    .evo__label { font-size: 0.74rem; color: var(--ink-3); line-height: 1.25; margin-top: 2px; }
+    .evo__detail {
+      max-width: 680px; margin: 6px auto 0;
+      background: var(--surface); border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-md); padding: 22px 24px;
+      transition: border-color 0.2s var(--ease);
+    }
+    .evo__detail-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .evo__detail-head svg { width: 32px; height: 32px; flex-shrink: 0; }
+    .evo__detail-nick { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+    .evo__detail-name { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; }
+    .evo__gained { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); margin: 4px 0 12px; }
+    .evo__detail p { font-size: 1rem; line-height: 1.7; margin: 0; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="../index.html">tim<span>.</span></a>
+    <div class="nav__links">
+      <a href="../about.html">About</a>
+      <a href="../work.html">Work</a>
+      <a href="../projects.html">Projects</a>
+      <a href="index.html">Blog</a>
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <p style="text-align:center;"><a href="index.html" style="color: var(--ink-3); font-family: var(--font-mono); font-size: 0.88rem;">← All posts</a></p>
+
+    <div class="post-wrap">
+      <div class="eyebrow" style="text-align:center;">Blog · Energy</div>
+      <h1 style="text-align:center;">Meter Top Trumps: which meter survives MHHS?</h1>
+      <p class="post-meta" style="text-align:center; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.85rem;">June 2026 · 7 min read + a game</p>
+
+      <p>Look at the meter on the side of your house and you're looking at a fossil record. Whatever box happens to be on your wall belongs to a lineage stretching back more than a century — and each generation added a trick the one before it couldn't manage.</p>
+
+      <p>This is the story of how the electricity meter evolved: from a spinning aluminium disc that could only <em>count</em>, to a connected device that knows exactly what you used in every half-hour of the day. It's a story of meters slowly gaining new senses — first a counter, then a clock, then a remote signal, then a memory and finally a phone line home.</p>
+
+      <p>And it's a story that has suddenly come to a head, because of a quiet reform called MHHS that rewards the meters at the smart end of the family tree and quietly retires the ones at the other. So naturally, I turned the whole family into a game of Top Trumps.</p>
+
+      <p>Six meters tell the entire story. Here they are, oldest first — tap any one to see what it added to the lineage.</p>
+    </div>
+
+    <div class="post-wrap">
+      <h2 style="text-align:center;">Six generations on the wall</h2>
+    </div>
+
+    <div class="evo" id="evo">
+      <div class="evo__track" id="evo-track"></div>
+      <div class="evo__detail" id="evo-detail"></div>
+    </div>
+
+    <div class="post-wrap">
+      <h2>Why the latest step suddenly matters: MHHS</h2>
+
+      <p>For most of that century, the industry only ever knew your <em>total</em> consumption — so when it came to billing, it mostly <em>guessed</em> when you used it. Your usage got smeared across the day using a standard "profile": a national average of what a typical home does at a typical hour. A reasonable guess, but a guess all the same.</p>
+
+      <p>MHHS — Market-wide Half-Hourly Settlement — replaces the guess with the real thing. It went live in September 2025 and is migrating homes through to 2027, after which every meter will be <em>settled</em> in the wholesale market on what you actually used in each half-hour, not on an average.</p>
+
+      <p>Why does that matter to you? Half-hourly data is the plumbing behind time-of-use tariffs like Octopus Agile. It's what lets a supplier charge you less for running the dishwasher at 2pm on a windy afternoon and steer you away from the expensive, carbon-heavy early-evening peak. It rewards flexibility — and a grid full of flexible homes is a cheaper, greener grid.</p>
+
+      <p>There's just one catch: your meter has to keep up. A meter that can't produce a half-hourly read is a meter living on borrowed time. Which brings us, at last, to the cards.</p>
+    </div>
+
+    <h2 style="text-align:center; margin-top: 48px;">Play: Meter Top Trumps</h2>
+    <p class="post-wrap" style="text-align:center; color: var(--ink-2);">Six meters, five stats. You and the deck get three cards each. On your turn, pick the stat you think beats the opponent's hidden card — win the round, take both cards and the right to pick next. Clear the deck to win.</p>
+
+    <div class="tt" id="tt-game">
+      <div class="tt__bar">
+        <div class="tt__score">You: <b id="tt-you">3</b> &nbsp;·&nbsp; Deck: <b id="tt-cpu">3</b></div>
+        <div class="tt__turn" id="tt-turn">Your turn — pick a stat</div>
+      </div>
+      <div class="tt__arena">
+        <div class="tt__card" id="tt-player"></div>
+        <div class="tt__card tt__card--cpu" id="tt-opponent"></div>
+      </div>
+      <div class="tt__msg" id="tt-msg"></div>
+      <div class="tt__controls" id="tt-controls"></div>
+      <p class="tt__hint">Stats are loosely grounded in reality and mostly there for fun — please don't quote them at an industry conference.</p>
+    </div>
+
+    <div class="post-wrap">
+      <h2>The cards in full</h2>
+      <p>However the game went, here's what MHHS actually means for each meter:</p>
+    </div>
+    <div class="tt-index" id="tt-index"></div>
+
+    <div class="post-wrap">
+      <h2>So, what's the takeaway?</h2>
+
+      <p>Run the family tree end to end and the pattern is clear: every generation added a sense the last one lacked — a counter, a clock, a remote signal, a memory, a phone line home — and MHHS is simply the moment the market finally catches up to what the newest meters can already do. The smarter and better-connected your meter, the brighter its future.</p>
+
+      <p>Britain is well down that road. Around 41 million smart and advanced meters are now installed — roughly 71% of all meters — and the goal is to reach effectively every home by 2030. If you've still got a traditional spinning-disc meter it works fine today, but it can't do half-hourly, so you'll stay on estimates while everyone else moves to smarter tariffs. If you've got an RTS meter the situation is genuinely urgent: the radio signal that operates it is being switched off region by region, finishing by the end of June 2026 — MHHS or no MHHS.</p>
+
+      <p>And if you've got a SMETS2 smart meter? You're not just surviving the transition — you're holding the card the whole reform was designed around. Half-hourly data out of the box, proper time-of-use tariffs unlocked, and a real shot at a cheaper, greener bill.</p>
+
+      <p>The house always wins, as they say. In this case, so does the half-hourly meter.</p>
+
+      <p style="color: var(--ink-3); font-size: 0.95rem;">Got a meter you're not sure about? Your energy supplier can tell you what's on your wall and whether an upgrade is available. <a href="mailto:hello@timcmaxwell.com" style="color: var(--accent);">Drop me a line</a> if you want to talk meters.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__meta">© <span data-year></span> Tim Maxwell · hello@timcmaxwell.com</div>
+    <div class="footer__socials">
+      <a href="https://www.linkedin.com/in/timconstablemaxwell/" aria-label="LinkedIn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+      </a>
+      <a href="mailto:hello@timcmaxwell.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+(function () {
+  var ICONS = {
+    electro: '<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="15" stroke="currentColor" stroke-width="3"/><path d="M24 24l9-8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="24" r="3" fill="currentColor"/></svg>',
+    eco7: '<svg viewBox="0 0 48 48" fill="none"><circle cx="16" cy="24" r="6" stroke="currentColor" stroke-width="3"/><path d="M16 13v-3M16 38v-3M7 24H4M28 24h-3M9.5 17.5l-2-2M9.5 30.5l-2 2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M40 28a8 8 0 1 1-9-12 6.5 6.5 0 0 0 9 12Z" fill="currentColor"/></svg>',
+    rts: '<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="34" r="3.5" fill="currentColor"/><path d="M16 30a11 11 0 0 1 16 0M11 24.5a18 18 0 0 1 26 0M6.5 19a25 25 0 0 1 35 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+    ppm: '<svg viewBox="0 0 48 48" fill="none"><circle cx="18" cy="19" r="8" stroke="currentColor" stroke-width="3"/><path d="M23.5 24.5L36 37M31 35l4-4M35 39l4-4" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+    smets1: '<svg viewBox="0 0 48 48" fill="none"><rect x="10" y="11" width="28" height="21" rx="2" stroke="currentColor" stroke-width="3"/><rect x="22" y="22" width="4" height="5" fill="currentColor"/><path d="M19 38h10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+    smets2: '<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="11" width="32" height="19" rx="2" stroke="currentColor" stroke-width="3"/><rect x="14" y="22" width="3.5" height="4" fill="currentColor"/><rect x="20" y="20" width="3.5" height="6" fill="currentColor"/><rect x="26" y="17" width="3.5" height="9" fill="currentColor"/><path d="M18 36h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>'
+  };
+
+  var STATS = [
+    { key: 'smart', label: 'Smart rating', suffix: ' /100' },
+    { key: 'mhhs', label: 'MHHS readiness', suffix: ' /100' },
+    { key: 'flex', label: 'Tariff flexibility', suffix: ' /100' },
+    { key: 'resilience', label: 'Off-grid resilience', suffix: ' /100' },
+    { key: 'track', label: 'Track record', suffix: ' yrs' }
+  ];
+
+  var DECK = [
+    { id: 'electro', name: 'Electromechanical Meter', nick: 'The Veteran', color: '#5F5E5A',
+      era: 'In service: 1900s–today (being replaced)', intro: '1900s', gained: 'Gained: the ability to count',
+      blurb: 'The classic spinning-disc meter. Analogue, dependable, read by a human with a clipboard.',
+      evo: 'The original, and for most of the 20th century the only one. An aluminium disc spins between magnets at a speed proportional to the power you draw, and a gear train counts the rotations. No clock, no memory, no way to talk to anyone — to bill you, someone has to physically walk up and read the dial. Everything that follows is the story of adding senses to this humble counter.',
+      stats: { smart: 2, mhhs: 5, flex: 8, resilience: 95, track: 90 },
+      verdict: 'Game over. It physically cannot produce a half-hourly read, so under MHHS it stays on estimated profiles until it is swapped for a smart meter.' },
+    { id: 'eco7', name: 'Economy 7 Meter', nick: 'The Night Owl', color: '#534AB7',
+      era: 'In service: late 1970s–today', intro: '1978', gained: 'Gained: a clock',
+      blurb: 'A dual-rate meter with a cheaper night window — built for storage heaters and off-peak living.',
+      evo: 'The first hint that time matters. A mechanical timeswitch added a second register that recorded a cheaper rate for seven night-time hours, designed to sell off-peak power to storage heaters. Electricity was suddenly no longer one flat price — the clock had entered the meter, and with it the whole idea of paying different amounts at different times of day.',
+      stats: { smart: 15, mhhs: 22, flex: 45, resilience: 80, track: 50 },
+      verdict: 'Borrowed time. Static day/night windows are a blunt instrument next to true half-hourly pricing — expect a nudge towards a smart meter.' },
+    { id: 'rts', name: 'Radio Teleswitch Meter', nick: 'The Fading Signal', color: '#993C1D',
+      era: 'In service: 1984–2026', intro: '1984', gained: 'Gained: a remote signal',
+      blurb: 'Switches between rates on a longwave radio signal — clever for its era, but reliant on a broadcast now being switched off.',
+      evo: 'Rather than trust an unreliable internal clock, the rate switch was driven from outside — a longwave radio signal broadcast nationally, famously piggybacking on BBC Radio 4. Suppliers could now change switching times remotely, over the air, to the whole country at once. Brilliant for its era. The catch: it all depends on one ageing transmitter, and that signal is being switched off for good through 2026.',
+      stats: { smart: 25, mhhs: 12, flex: 55, resilience: 30, track: 40 },
+      verdict: 'Urgent. The radio signal that operates it is being switched off region by region, finishing by 30 June 2026 — RTS meters need replacing regardless of MHHS. Do not wait for a letter.' },
+    { id: 'ppm', name: 'Traditional Prepayment Meter', nick: 'The Top-Up', color: '#0F6E56',
+      era: 'In service: 1990s–today', intro: '1990s', gained: 'Gained: a human interface',
+      blurb: 'Pay-as-you-go electricity via a key or card topped up at the shop.',
+      evo: 'A side-branch of the family tree — not about <em>when</em> you use power but <em>how you pay</em> for it. Electronic key and card meters let you pay as you go, topping up at the corner shop. Still no link back to the supplier, but for the first time these were meters you actively interacted with: a little screen, a balance, a slot. The meter started talking to <em>you</em>, even if it couldn\'t yet talk to anyone else.',
+      stats: { smart: 20, mhhs: 18, flex: 25, resilience: 70, track: 35 },
+      verdict: 'Upgrade due. Traditional prepay cannot do half-hourly — but smart prepayment mode on a SMETS2 meter can, and keeps the pay-as-you-go control.' },
+    { id: 'smets1', name: 'SMETS1 Smart Meter', nick: 'The Pioneer', color: '#185FA5',
+      era: 'In service: 2016–2018', intro: '2016', gained: 'Gained: a memory',
+      blurb: 'The first generation of smart meters. Early adopters who sometimes lost their smarts when switching supplier.',
+      evo: 'The leap to two-way communication. The first smart meters could finally record consumption in half-hourly detail, store it, and send it back automatically — no clipboard required, and an in-home display so you could watch your usage in real time. The flaw: many early models "went dumb" when you switched supplier, until they were later enrolled into the national smart network (the DCC) and had their smarts restored.',
+      stats: { smart: 72, mhhs: 78, flex: 82, resilience: 55, track: 9 },
+      verdict: 'Mostly there. Once enrolled into the national smart network (the DCC), SMETS1 meters can deliver the half-hourly data MHHS needs.' },
+    { id: 'smets2', name: 'SMETS2 Smart Meter', nick: 'The Champion', color: '#FF5A1F',
+      era: 'In service: 2018–today', intro: '2018', gained: 'Gained: a phone line home',
+      blurb: 'The current standard. Connected to the national smart network from day one, supplier-switch and all.',
+      evo: 'Communication, standardised. SMETS2 is connected to the national smart network from the moment it\'s installed, so it keeps its smarts through any supplier switch and speaks half-hourly by default. Around 41 million smart and advanced meters are now on walls across Britain — and this is the generation the entire settlement reform is being rebuilt around. The hundred-year journey from a spinning disc ends with a meter that knows exactly what you used, and when.',
+      stats: { smart: 98, mhhs: 99, flex: 96, resilience: 75, track: 7 },
+      verdict: 'Built for this. SMETS2 is the meter MHHS was designed around — half-hourly data out of the box, ready for proper time-of-use tariffs.' }
+  ];
+
+  var youEl = document.getElementById('tt-you');
+  var cpuEl = document.getElementById('tt-cpu');
+  var turnEl = document.getElementById('tt-turn');
+  var playerEl = document.getElementById('tt-player');
+  var oppEl = document.getElementById('tt-opponent');
+  var msgEl = document.getElementById('tt-msg');
+  var controlsEl = document.getElementById('tt-controls');
+
+  var playerPile = [], cpuPile = [], turn = 'player', phase = 'choose';
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function statRow(card, key, opts) {
+    opts = opts || {};
+    var s = STATS.filter(function (x) { return x.key === key; })[0];
+    var cls = 'tt__stat';
+    if (opts.pick) cls += ' is-pick';
+    if (opts.outcome === 'win') cls += ' is-win';
+    if (opts.outcome === 'lose') cls += ' is-lose';
+    var dis = opts.clickable ? '' : ' disabled';
+    var attr = opts.clickable ? ' data-stat="' + key + '"' : '';
+    return '<button class="' + cls + '"' + attr + dis + '>' +
+      '<span>' + s.label + '</span>' +
+      '<span class="tt__stat-val">' + card.stats[key] + s.suffix + '</span></button>';
+  }
+
+  function cardFace(card, statOpts) {
+    statOpts = statOpts || {};
+    var rows = '';
+    STATS.forEach(function (s) {
+      rows += statRow(card, s.key, statOpts[s.key] || {});
+    });
+    return '<div class="tt__portrait" style="background:' + card.color + '">' +
+        ICONS[card.id] +
+        '<div class="tt__pt-text"><div class="tt__nick">' + card.nick + '</div>' +
+        '<div class="tt__name">' + card.name + '</div></div>' +
+      '</div>' +
+      '<div class="tt__era">' + card.era + '</div>' +
+      '<div class="tt__blurb">' + card.blurb + '</div>' +
+      '<ul class="tt__stats">' + rows + '</ul>';
+  }
+
+  function cardBack() {
+    return '<div class="tt__back">' +
+      '<div class="tt__back-mark">⚡</div>' +
+      '<div class="tt__back-sub">Deck card — hidden</div></div>';
+  }
+
+  function render() {
+    youEl.textContent = playerPile.length;
+    cpuEl.textContent = cpuPile.length;
+
+    var pCard = DECK[playerPile[0]];
+    var cCard = DECK[cpuPile[0]];
+
+    if (phase === 'choose') {
+      var clickable = (turn === 'player');
+      playerEl.innerHTML = cardFace(pCard, clickable ? makeClickable() : {});
+      oppEl.innerHTML = cardBack();
+      turnEl.textContent = clickable ? 'Your turn — pick a stat' : 'Deck is choosing…';
+      msgEl.textContent = '';
+      msgEl.className = 'tt__msg';
+      controlsEl.innerHTML = '';
+      if (clickable) bindStats();
+    }
+  }
+
+  function makeClickable() {
+    var o = {};
+    STATS.forEach(function (s) { o[s.key] = { clickable: true }; });
+    return o;
+  }
+
+  function bindStats() {
+    var btns = playerEl.querySelectorAll('[data-stat]');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener('click', function () {
+        playStat(this.getAttribute('data-stat'));
+      });
+    }
+  }
+
+  function cpuChoose() {
+    var c = DECK[cpuPile[0]];
+    var best = STATS[0].key, bestVal = -1;
+    STATS.forEach(function (s) {
+      if (c.stats[s.key] > bestVal) { bestVal = c.stats[s.key]; best = s.key; }
+    });
+    playStat(best);
+  }
+
+  function playStat(key) {
+    if (phase !== 'choose') return;
+    phase = 'reveal';
+
+    var pCard = DECK[playerPile[0]];
+    var cCard = DECK[cpuPile[0]];
+    var pv = pCard.stats[key], cv = cCard.stats[key];
+    var result = pv > cv ? 'win' : (cv > pv ? 'lose' : 'draw');
+
+    var pOpts = {}, cOpts = {};
+    STATS.forEach(function (s) { pOpts[s.key] = {}; cOpts[s.key] = {}; });
+    pOpts[key] = { pick: true, outcome: result === 'win' ? 'win' : (result === 'lose' ? 'lose' : '') };
+    cOpts[key] = { pick: true, outcome: result === 'lose' ? 'win' : (result === 'win' ? 'lose' : '') };
+
+    playerEl.innerHTML = cardFace(pCard, pOpts);
+    oppEl.innerHTML = cardFace(cCard, cOpts);
+
+    var label = STATS.filter(function (x) { return x.key === key; })[0].label;
+    if (result === 'win') {
+      msgEl.textContent = 'You win the round on ' + label + '!';
+      msgEl.className = 'tt__msg win';
+    } else if (result === 'lose') {
+      msgEl.textContent = 'The deck takes it on ' + label + '.';
+      msgEl.className = 'tt__msg lose';
+    } else {
+      msgEl.textContent = 'A draw on ' + label + ' — cards stay put.';
+      msgEl.className = 'tt__msg draw';
+    }
+
+    // Resolve piles
+    var pc = playerPile.shift();
+    var cc = cpuPile.shift();
+    if (result === 'win') {
+      playerPile.push(pc, cc);
+      turn = 'player';
+    } else if (result === 'lose') {
+      cpuPile.push(cc, pc);
+      turn = 'cpu';
+    } else {
+      playerPile.push(pc);
+      cpuPile.push(cc);
+    }
+
+    youEl.textContent = playerPile.length;
+    cpuEl.textContent = cpuPile.length;
+    turnEl.textContent = 'Round over';
+
+    if (playerPile.length === 0 || cpuPile.length === 0) {
+      gameOver();
+    } else {
+      controlsEl.innerHTML = '<button class="tt-btn" id="tt-next">Next round →</button>';
+      document.getElementById('tt-next').addEventListener('click', function () {
+        phase = 'choose';
+        render();
+        if (turn === 'cpu') {
+          turnEl.textContent = 'Deck is choosing…';
+          setTimeout(cpuChoose, 850);
+        }
+      });
+    }
+  }
+
+  function gameOver() {
+    var won = cpuPile.length === 0;
+    msgEl.textContent = won ? 'You cleared the deck — you win! ⚡' : 'The deck cleared you out. Rematch?';
+    msgEl.className = 'tt__msg ' + (won ? 'win' : 'lose');
+    turnEl.textContent = 'Game over';
+    controlsEl.innerHTML = '<button class="tt-btn" id="tt-again">Play again</button>';
+    document.getElementById('tt-again').addEventListener('click', newGame);
+  }
+
+  function newGame() {
+    var order = shuffle(DECK.map(function (_, i) { return i; }));
+    playerPile = order.slice(0, 3);
+    cpuPile = order.slice(3);
+    turn = 'player';
+    phase = 'choose';
+    render();
+  }
+
+  // Build the evolution timeline (DECK is already in chronological order)
+  var evoTrack = document.getElementById('evo-track');
+  var evoDetail = document.getElementById('evo-detail');
+
+  function showEvo(i) {
+    var c = DECK[i];
+    var nodes = evoTrack.querySelectorAll('.evo__node');
+    for (var n = 0; n < nodes.length; n++) {
+      nodes[n].classList.toggle('is-active', n === i);
+      nodes[n].setAttribute('aria-selected', n === i ? 'true' : 'false');
+    }
+    evoDetail.style.borderLeftColor = c.color;
+    evoDetail.innerHTML =
+      '<div class="evo__detail-head">' +
+        '<span style="color:' + c.color + '">' + ICONS[c.id] + '</span>' +
+        '<div><div class="evo__detail-nick">' + c.intro + ' · ' + c.nick + '</div>' +
+        '<div class="evo__detail-name">' + c.name + '</div></div>' +
+      '</div>' +
+      '<div class="evo__gained">' + c.gained + '</div>' +
+      '<p>' + c.evo + '</p>';
+  }
+
+  var evoHtml = '';
+  DECK.forEach(function (card, i) {
+    evoHtml += '<button class="evo__node" role="tab" aria-selected="false" data-evo="' + i + '">' +
+      '<span class="evo__dot" style="background:' + card.color + '">' + ICONS[card.id] + '</span>' +
+      '<div class="evo__year">' + card.intro + '</div>' +
+      '<div class="evo__label">' + card.nick + '</div></button>';
+  });
+  evoTrack.innerHTML = evoHtml;
+  var evoBtns = evoTrack.querySelectorAll('[data-evo]');
+  for (var e = 0; e < evoBtns.length; e++) {
+    evoBtns[e].addEventListener('click', function () {
+      showEvo(parseInt(this.getAttribute('data-evo'), 10));
+    });
+  }
+  showEvo(0);
+
+  // Build the card index
+  var indexEl = document.getElementById('tt-index');
+  var idxHtml = '';
+  DECK.forEach(function (card) {
+    idxHtml += '<div class="tt-index__card">' +
+      '<div class="tt-index__head" style="background:' + card.color + '">' +
+        ICONS[card.id] +
+        '<div><div class="tt__nick">' + card.nick + '</div>' +
+        '<div style="font-family:var(--font-display);font-weight:600;">' + card.name + '</div></div>' +
+      '</div>' +
+      '<div class="tt-index__body"><p class="tt-index__verdict"><strong>MHHS verdict.</strong> ' +
+        card.verdict + '</p></div></div>';
+  });
+  indexEl.innerHTML = idxHtml;
+
+  newGame();
+})();
+</script>
+</body>
+</html>
