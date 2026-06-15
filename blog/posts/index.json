@@ -1,4 +1,3 @@
-
 [
   {
     "slug": "meter-top-trumps",
@@ -13,13 +12,13 @@
   },
   {
     "slug": "p442-flow",
-    "title": "P442, before and after: how licence-exempt supply finally adds up",
+    "title": "Why local clean power couldn't find a local buyer — until P442",
     "date": "2026-06-13",
     "tags": [
       "energy",
       "interactive"
     ],
-    "excerpt": "An interactive before/after walk through BSC modification P442 — the ESNA role, half-hourly time-matching, and the EMR levies that locally-matched volumes now avoid.",
+    "excerpt": "An interactive, plain-English look at P442 — the small rule change that finally lets a local solar or wind project sell power straight to a nearby business.",
     "url": "p442-flow.html"
   }
 ]
