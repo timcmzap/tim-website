@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>P442, before and after: how licence-exempt supply finally adds up · Tim Maxwell</title>
-  <meta name="description" content="An interactive before/after look at BSC modification P442 — the ESNA role, half-hourly time-matching, and the EMR levies that licence-exempt volumes now avoid." />
+  <title>Why local clean power couldn't find a local buyer — until P442 · Tim Maxwell</title>
+  <meta name="description" content="A plain-English, interactive look at P442 — the small rule change that lets a local solar or wind project sell power directly to a nearby business and skip national charges on the matched bit." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -31,45 +31,34 @@
     }
     .p442__switch button.is-on { background: var(--accent); color: #fff; }
 
-    .flow {
-      position: relative; width: 100%; max-width: 760px; margin: 18px auto 0;
-      overflow-x: auto; -webkit-overflow-scrolling: touch;
-    }
-    .flow__stage { position: relative; width: 760px; height: 470px; margin: 0 auto; }
-    .flow__svg { position: absolute; inset: 0; width: 760px; height: 470px; z-index: 0; }
-    .node {
-      position: absolute; z-index: 2; box-sizing: border-box;
+    /* vertical flow — robust, normal document layout (no overlap possible) */
+    .flow2 { max-width: 480px; margin: 22px auto 0; }
+    .fnode {
       background: var(--surface); border: 1px solid var(--line);
-      border-radius: var(--radius-sm); padding: 12px 14px;
-      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease), border-color 0.3s var(--ease);
+      border-left: 4px solid var(--ink-3); border-radius: var(--radius-sm);
+      padding: 12px 16px;
     }
-    .node__role { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
-    .node__name { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--ink); line-height: 1.2; margin-top: 2px; }
-    .node__sub { font-size: 0.8rem; color: var(--ink-2); margin-top: 4px; line-height: 1.35; }
+    .fnode--gen { border-left-color: #1d9e75; }
+    .fnode--esna { border-left-color: var(--accent); }
+    .fnode--supplier { border-left-color: #8A7D70; }
+    .fnode--buyer { border-left-color: var(--accent-2); }
+    .fnode__role { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+    .fnode__name { font-family: var(--font-display); font-weight: 600; font-size: 1rem; color: var(--ink); line-height: 1.2; margin-top: 2px; }
+    .fnode__sub { font-size: 0.84rem; color: var(--ink-2); margin-top: 4px; line-height: 1.4; }
 
-    .node--gen      { left: 20px;  top: 188px; width: 178px; border-left: 4px solid #1d9e75; }
-    .node--esna     { left: 291px; top: 184px; width: 178px; border-left: 4px solid var(--accent); }
-    .node--consumer { left: 562px; top: 188px; width: 178px; }
-    .node--supplier { left: 562px; top: 24px;  width: 178px; border-left: 4px solid #8A7D70; }
-    .node--bsc      { left: 291px; top: 360px; width: 178px; border-left: 4px solid var(--accent); }
-    .node--emr {
-      left: 588px; top: 120px; width: 150px; padding: 8px 12px;
-      background: var(--accent-soft); border-color: var(--accent);
+    .fconn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 9px 10px 9px 4px; color: var(--ink-2); font-size: 0.84rem; line-height: 1.4;
     }
-    .node--emr .node__name { font-size: 0.86rem; }
+    .fconn__arr { flex: 0 0 24px; text-align: center; font-size: 1.4rem; line-height: 1; color: var(--ink-3); }
+    .fconn--green .fconn__arr { color: #1d9e75; }
+    .fconn--amber .fconn__arr { color: #b06a1d; }
+    .fconn--note { color: var(--ink-3); font-size: 0.8rem; }
+    .fconn--note .fconn__arr { color: var(--accent); }
 
-    /* after-only + before-only visibility by mode */
-    .flow__stage[data-mode="before"] .after-only { opacity: 0; pointer-events: none; transform: translateY(8px); }
-    .flow__stage[data-mode="after"]  .before-only { opacity: 0; pointer-events: none; }
-    .arrow { transition: opacity 0.4s var(--ease); }
-    .flow__stage[data-mode="before"] .arrow.after-only { opacity: 0; }
-    .flow__stage[data-mode="after"]  .arrow.before-only { opacity: 0; }
-
-    .arrow-label {
-      font-family: var(--font-mono); font-size: 11px; fill: var(--ink-2);
-    }
-    .arrow-label--exempt { fill: #1d9e75; font-weight: 600; }
-    .arrow-label--levied { fill: #b06a1d; }
+    /* show/hide by mode — display:none so hidden steps take no space */
+    .flow2[data-mode="before"] .afteronly { display: none; }
+    .flow2[data-mode="after"]  .beforeonly { display: none; }
 
     /* ---------- Ledger ---------- */
     .ledger {
@@ -121,15 +110,15 @@
     <p style="text-align:center;"><a href="index.html" style="color: var(--ink-3); font-family: var(--font-mono); font-size: 0.88rem;">← All posts</a></p>
 
     <div class="post-wrap">
-      <div class="eyebrow" style="text-align:center;">Blog · Energy markets</div>
-      <h1 style="text-align:center;">P442, before and after: how licence-exempt supply finally adds up</h1>
+      <div class="eyebrow" style="text-align:center;">Blog · Energy explained</div>
+      <h1 style="text-align:center;">Why local clean power couldn't find a local buyer — until P442</h1>
       <p class="post-meta" style="text-align:center; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.85rem;">June 2026 · 6 min read · interactive</p>
 
-      <p>For two decades, licence-exempt supply was a good idea the settlement system couldn't actually carry. The Class A exemption let a small generator supply a local consumer without a supply licence — but inside the Balancing and Settlement Code there was no clean way to split a single SVA metering system's volume into the part that was genuinely exempt and the part that was licensable. So the locally-matched volume sat in the same bucket as everything else, exposed to the supplier-borne charges that fund Electricity Market Reform.</p>
+      <p>Picture a solar farm in a field, and a factory across the road that hums away all day. The obvious thing would be for the field to sell its power straight to the factory — short trip, clean energy, everyone happy. For about twenty years, it basically couldn't. Not because of the wires or the technology, but because of the way Britain keeps score of who owes what for electricity.</p>
 
-      <p>BSC modification <strong>P442 — "Reporting chargeable volumes for exempt and licensed supply"</strong> — closes that gap. It introduces a qualified third-party role, the <strong>Exempt Supply Notification Agent (ESNA)</strong>, that time-matches generation against consumption in each half-hour and reports the exempt volume into central settlement. The matched volume is then excluded from EMR levies — Contracts for Difference and the Capacity Market — and the economics of local supply finally close.</p>
+      <p>The rules actually <em>allowed</em> the idea. A small generator is permitted to supply a nearby customer directly without becoming a fully licensed energy company — this is called <strong>licence-exempt supply</strong>. The problem was the accounting. Every unit of electricity that moves through a meter gets swept into a national tallying system, and that system had no tidy way to say "this bit was local, and that bit came off the grid." So the local bit got lumped in with everything else — and picked up national charges it arguably shouldn't have. That was usually enough to kill the deal.</p>
 
-      <p>The change is easiest to see as a picture. Toggle between the two states below.</p>
+      <p>A small, deeply unglamorous rule change called <strong>P442</strong> fixed exactly this. It created a kind of referee whose job is to look, every half hour, at how much of the local generation was genuinely used on site at the same moment — and label just that slice as local, so it can skip the national charges. Suddenly the field-to-factory deal adds up. Flip the diagram below to see what changed.</p>
     </div>
 
     <div class="p442">
@@ -140,126 +129,110 @@
         </div>
       </div>
 
-      <div class="flow">
-        <div class="flow__stage" id="stage" data-mode="after">
-          <svg class="flow__svg" viewBox="0 0 760 470" aria-hidden="true">
-            <defs>
-              <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-                <path d="M0 0 L9 4.5 L0 9 z" fill="var(--ink-3)"/>
-              </marker>
-              <marker id="ah-green" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-                <path d="M0 0 L9 4.5 L0 9 z" fill="#1d9e75"/>
-              </marker>
-              <marker id="ah-amber" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-                <path d="M0 0 L9 4.5 L0 9 z" fill="#b06a1d"/>
-              </marker>
-            </defs>
+      <div class="flow2" id="stage" data-mode="after">
 
-            <!-- BEFORE: generator straight to consumer, whole volume on the levied route -->
-            <g class="arrow before-only">
-              <path d="M200 232 L556 234" fill="none" stroke="#b06a1d" stroke-width="3" marker-end="url(#ah-amber)"/>
-              <text class="arrow-label arrow-label--levied" x="300" y="222">on-site supply — no exempt split</text>
-            </g>
-
-            <!-- AFTER: generator -> ESNA -> consumer (exempt, green) -->
-            <g class="arrow after-only">
-              <path d="M200 232 L289 232" fill="none" stroke="#1d9e75" stroke-width="3" marker-end="url(#ah-green)"/>
-              <path d="M471 232 L556 232" fill="none" stroke="#1d9e75" stroke-width="3" marker-end="url(#ah-green)"/>
-              <text class="arrow-label arrow-label--exempt" x="486" y="222">exempt — no EMR levy</text>
-              <!-- ESNA report down to BSC -->
-              <path d="M380 318 L380 358" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
-              <text class="arrow-label" x="392" y="342">exempt-volume report</text>
-            </g>
-
-            <!-- BOTH: supplier residual top-up into consumer, carrying EMR levies -->
-            <g class="arrow">
-              <path d="M651 108 L651 184" fill="none" stroke="#b06a1d" stroke-width="3" marker-end="url(#ah-amber)"/>
-              <text class="arrow-label arrow-label--levied" x="540" y="150" text-anchor="end">residual</text>
-            </g>
-          </svg>
-
-          <div class="node node--gen">
-            <div class="node__role">Generator · sub-5MW</div>
-            <div class="node__name">Local renewable</div>
-            <div class="node__sub">Community solar / wind, embedded or private-wire</div>
-          </div>
-
-          <div class="node node--esna after-only">
-            <div class="node__role">New role · qualified</div>
-            <div class="node__name">ESNA</div>
-            <div class="node__sub">Time-matches gen v demand each half-hour; reports exempt volume</div>
-          </div>
-
-          <div class="node node--consumer">
-            <div class="node__role">Offtaker</div>
-            <div class="node__name">Business consumer</div>
-            <div class="node__sub">Sleeved / behind-the-meter PPA</div>
-          </div>
-
-          <div class="node node--supplier">
-            <div class="node__role">Licensed</div>
-            <div class="node__name">Supplier</div>
-            <div class="node__sub">Provides residual top-up & balancing</div>
-          </div>
-
-          <div class="node node--emr">
-            <div class="node__role">EMR levies</div>
-            <div class="node__name">CfD + Capacity Market</div>
-            <div class="node__sub" id="emr-scope">applies to residual only</div>
-          </div>
-
-          <div class="node node--bsc after-only">
-            <div class="node__role">Central settlement</div>
-            <div class="node__name">BSC / EMR delivery body</div>
-            <div class="node__sub">Receives the validated exempt split</div>
-          </div>
+        <div class="fnode fnode--gen">
+          <div class="fnode__role">The generator</div>
+          <div class="fnode__name">Local solar / wind</div>
+          <div class="fnode__sub">A small renewable project, under 5MW</div>
         </div>
+
+        <div class="fconn fconn--green afteronly">
+          <span class="fconn__arr">↓</span>
+          <span>generates power, half hour by half hour</span>
+        </div>
+
+        <div class="fnode fnode--esna afteronly">
+          <div class="fnode__role">P442's referee</div>
+          <div class="fnode__name">Matching agent (ESNA)</div>
+          <div class="fnode__sub">Each half hour, works out how much was made <em>and</em> used on site, and labels just that slice as local</div>
+        </div>
+
+        <div class="fconn fconn--green afteronly">
+          <span class="fconn__arr">↓</span>
+          <span><strong>The matched local slice</strong> — national charges skipped</span>
+        </div>
+
+        <div class="fconn fconn--amber beforeonly">
+          <span class="fconn__arr">↓</span>
+          <span>Local power, but no way to separate it out — so it's all counted as grid supply, and <strong>all charged</strong></span>
+        </div>
+
+        <div class="fnode fnode--buyer">
+          <div class="fnode__role">The buyer</div>
+          <div class="fnode__name">Local business</div>
+          <div class="fnode__sub">Buys power direct from the generator</div>
+        </div>
+
+        <div class="fconn fconn--amber">
+          <span class="fconn__arr">↑</span>
+          <span id="emr-scope">Grid top-up — carries the national charges (CfD + Capacity Market)</span>
+        </div>
+
+        <div class="fnode fnode--supplier">
+          <div class="fnode__role">Normal supplier</div>
+          <div class="fnode__name">Grid supplier</div>
+          <div class="fnode__sub">Tops up whatever the local source can't cover</div>
+        </div>
+
+        <div class="fconn fconn--note afteronly">
+          <span class="fconn__arr">⤷</span>
+          <span>The ESNA logs the local slice with the national accounts (settlement), so it's recorded as exempt</span>
+        </div>
+
       </div>
 
       <div class="legend">
-        <span><i style="background:#1d9e75"></i> exempt, time-matched volume</span>
-        <span><i style="background:#b06a1d"></i> volume bearing EMR levies</span>
-        <span><i style="background:var(--accent)"></i> P442 data flow</span>
+        <span><i style="background:#1d9e75"></i> local power, used on site (charges skipped)</span>
+        <span><i style="background:#b06a1d"></i> power that still carries national charges</span>
       </div>
 
       <div class="ledger" id="ledger">
-        <div class="ledger__head" id="ledger-head">After P442 — one half-hour</div>
-        <div class="ledger__row"><span class="ledger__label">Generation in the half-hour</span><span class="ledger__val">2.0 MWh</span></div>
-        <div class="ledger__row"><span class="ledger__label">Consumer demand</span><span class="ledger__val">3.0 MWh</span></div>
-        <div class="ledger__row"><span class="ledger__label">Reportable as licence-exempt</span><span class="ledger__val" id="l-exempt">2.0 MWh</span></div>
-        <div class="ledger__row"><span class="ledger__label">Volume bearing EMR levies</span><span class="ledger__val" id="l-levied">1.0 MWh</span></div>
-        <div class="ledger__row"><span class="ledger__label">Indicative levy avoided <span style="color:var(--ink-3)">(~£60/MWh)</span></span><span class="ledger__val" id="l-saving">£120</span></div>
-        <p class="ledger__caption" id="l-caption">Only the 1 MWh residual top-up from the licensed supplier carries CfD and Capacity Market charges; the 2 MWh time-matched within the half-hour is exempt.</p>
+        <div class="ledger__head" id="ledger-head">After P442 — one half hour</div>
+        <div class="ledger__row"><span class="ledger__label">Local generation this half hour</span><span class="ledger__val">2.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">What the business used</span><span class="ledger__val">3.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">Counts as local &amp; exempt</span><span class="ledger__val" id="l-exempt">2.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">Still carries national charges</span><span class="ledger__val" id="l-levied">1.0 MWh</span></div>
+        <div class="ledger__row"><span class="ledger__label">Charges sidestepped <span style="color:var(--ink-3)">(~£60/MWh)</span></span><span class="ledger__val" id="l-saving">£120</span></div>
+        <p class="ledger__caption" id="l-caption">Only the 1 MWh of top-up from the grid supplier carries the national charges; the 2 MWh made and used on site in the same half hour is treated as local, and skips them.</p>
       </div>
-      <p class="hint">Figures are illustrative for a single half-hour. The ~£60/MWh is an indicative upper bound on avoided supplier-borne charges, shared between generator and consumer.</p>
+      <p class="hint">Numbers are a simple illustration for a single half hour. The ~£60/MWh is a rough upper estimate of the charges avoided, typically shared between the generator and the buyer.</p>
     </div>
 
     <div class="post-wrap">
-      <h2>The mechanic: matched within the half-hour</h2>
+      <h2>Why half an hour?</h2>
 
-      <p>The exemption is deliberately strict. Only electricity that is both generated and consumed <em>within the same half-hourly settlement period</em> counts as licence-exempt — there is no carrying forward, no daily netting, no notional matching across periods. In each settlement period the exempt volume is, in effect, the minimum of generation and demand behind the boundary, capped by the Class A threshold.</p>
+      <p>Britain's electricity market keeps its books in half-hour slots — 48 of them a day. It's the heartbeat of the whole system: prices, balancing, who supplied what, all settled half hour by half hour. P442 borrows the same rhythm. For power to count as genuinely "used locally," it has to be both generated and used in the <em>same</em> half-hour slot. No banking the lunchtime sunshine to cover the evening rush.</p>
 
-      <p>That is what the ESNA exists to compute. It validates the half-hourly generation and consumption data (from the HHDC or supplier), calculates the licensed-versus-exempt split, and submits the exempt volumes into central BSC systems so the EMR delivery body charges levies only on the licensed remainder. Crucially, an ESNA must go through a qualification process, which is what replaces the old manual, Elexon-administered handling and gives counterparties confidence the numbers are auditable.</p>
+      <p>So in any given slot, the local amount is just the smaller of the two numbers: what the panels made, and what the business actually used. Make 2 MWh and use 3, and 2 counts as local — the other 1 comes off the grid as normal. Make 2 and use only 1, and just 1 is local, with the spare exported. That "smaller of the two" is exactly what the matching agent works out, slot by slot.</p>
+
+      <h2>What were these national charges, anyway?</h2>
+
+      <p>Part of every electricity bill quietly funds national programmes. Two of the big ones: <strong>Contracts for Difference</strong>, which underwrite large renewable and nuclear projects, and the <strong>Capacity Market</strong>, which pays power stations and batteries to be on standby for tight winter evenings. Both are collected from licensed suppliers based on how much they sell, and passed through to bills.</p>
+
+      <p>They're sensible schemes. But a small solar farm selling to the business next door isn't really drawing on them for that local slice — so sweeping it up in those charges never quite made sense. P442 is, at heart, the mechanism that lets that slice off the hook. The saving can run to roughly £60 per MWh, which the generator and the buyer can share between them.</p>
 
       <div class="callout">
-        <strong>Class A, briefly.</strong> The small-supplier exemption applies where total supply is no more than <strong>5MW</strong>, of which no more than <strong>2.5MW</strong> may go to domestic consumers. It is technology-neutral, needs no pre-approval (operators self-assess), and can sit alongside generation and distribution licence exemptions.
+        <strong>So what's an "ESNA"?</strong> It's the official name for the referee: an <em>Exempt Supply Notification Agent</em>. It has to be vetted and approved, and it replaces what used to be a slow, manual paperwork process — which is a big part of why this never scaled before. Think of it as an accredited scorekeeper that both sides, and the regulator, can trust.
       </div>
 
-      <h2>What it actually enables</h2>
+      <h2>Who actually gets to do this?</h2>
 
-      <p>Strip away the settlement plumbing and P442 does one commercially significant thing: it lets the locally-matched volume escape charges that only ever applied to licensed suppliers. On the avoided EMR levies alone — the CfD Supplier Obligation and the Capacity Market Supplier Charge, plus other supplier-borne policy costs — the saving can run to roughly £60/MWh, value that can be split between the generator and the offtaker.</p>
+      <p>There are sensible limits, so this stays a genuinely local affair. It's aimed at small set-ups — up to 5MW of supply in total, with a cap on how much can go to homes rather than businesses. That's the scale of a community solar scheme, a local wind project, a big commercial rooftop, or a factory with a generator over the fence. It is emphatically not a route for a national supplier to dodge charges.</p>
 
-      <p>That reshapes the route to market for a specific class of project. Sub-5MW solar, onshore wind, hydro and anaerobic digestion, commercial rooftop, community schemes, and private-wire or embedded sites can now contract directly with a business consumer through a <strong>corporate sleeved PPA</strong> without the exempt volume being penalised, and without the disproportionate reporting burden that previously deterred smaller players. For the generator it is a higher, time-stamped price; for the corporate buyer it is verifiable clean supply aligned to actual generation periods; for licensed suppliers it is a framework to integrate time-matching and settle the residual within existing contracts.</p>
+      <h2>What it unlocks</h2>
+
+      <p>For a community energy group, it turns a nice idea into something that can actually pay for itself. For a company chasing real clean-energy credentials — not just certificates bought in bulk, but power it can point to and say "that came from those panels, at the moment we used it" — it offers exactly that, with a timestamped trail to prove it. And for the small generator, it means a better price and a buyer on the doorstep, which makes the next local solar or wind project easier to justify building.</p>
 
       <h2>Where it stops</h2>
 
-      <p>P442 is a settlement and reporting reform, not a new retail market. The exemption is bounded by the 5MW Class A limit and the half-hourly matching test, so it favours co-located or closely-coupled generation and demand rather than diffuse peer-to-peer trading across the network. Anything that isn't matched in-period is simply balanced through a normal retail supply contract, with the usual charges. The win is narrow but real: it removes the specific administrative and cost blockers that kept licence-exempt supply sub-scale.</p>
+      <p>It's worth being clear about what P442 isn't. It's not peer-to-peer energy trading for every household, and it's not a loophole. The size limit and the half-hour matching test keep it tied to generation and demand that genuinely sit close together. Anything that isn't matched in the moment simply comes from your normal supplier, with the usual charges. The win is narrow but real: it clears away the accounting that kept local clean supply stuck as a good idea.</p>
 
-      <h2>Status</h2>
+      <h2>When did this happen?</h2>
 
-      <p>Ofgem approved P442 in May 2024, with implementation through the February 2025 BSC release; the first ESNAs were accredited over the course of 2025. In January 2026 DESNZ refreshed its Class A supply-exemption guidance to align with the change, clarifying the thresholds and confirming that operators self-assess against the statutory criteria under the Electricity Act 1989 and the Class Exemptions Order 2001. The combination — a working settlement route plus clearer guidance — is what moves licence-exempt, time-matched supply from niche to genuinely bankable.</p>
+      <p>The regulator, Ofgem, approved P442 in May 2024, and it went live through early 2025. The first matching agents were up and running over the course of 2025, and in early 2026 the government refreshed its guidance for small suppliers to match. None of it made headlines — but it's the quiet sort of plumbing change that decides whether local clean energy stays niche or starts to add up.</p>
 
-      <p style="color: var(--ink-3); font-size: 0.95rem;">Working on a sleeved PPA or community-supply structure and want to compare notes on the settlement mechanics? <a href="mailto:hello@timcmaxwell.com" style="color: var(--accent);">Drop me a line</a>.</p>
+      <p style="color: var(--ink-3); font-size: 0.95rem;">Tinkering with a local-supply or community-energy idea and want a sounding board on how the pieces fit? <a href="mailto:hello@timcmaxwell.com" style="color: var(--accent);">Drop me a line</a>.</p>
     </div>
   </div>
 </section>
@@ -287,22 +260,22 @@
 
   var DATA = {
     before: {
-      head: 'Before P442 — one half-hour',
+      head: 'Before P442 — one half hour',
       exempt: '0.0 MWh',
       levied: '3.0 MWh',
       saving: '£0',
-      emrScope: 'applies to full volume',
+      emrScope: 'Grid top-up — and the local power too: here it all carries the national charges (CfD + Capacity Market)',
       exemptCls: 'bad',
-      caption: 'With no clean exempt split, the locally-matched 2 MWh stays exposed to supplier-borne EMR charges along with the residual — the whole 3 MWh effectively sits on the levied route.'
+      caption: 'With no clean way to separate the local bit, the 2 MWh made and used on site got lumped in with the grid top-up — so the whole 3 MWh carried the national charges.'
     },
     after: {
-      head: 'After P442 — one half-hour',
+      head: 'After P442 — one half hour',
       exempt: '2.0 MWh',
       levied: '1.0 MWh',
       saving: '£120',
-      emrScope: 'applies to residual only',
+      emrScope: 'Grid top-up — carries the national charges (CfD + Capacity Market)',
       exemptCls: 'good',
-      caption: 'Only the 1 MWh residual top-up from the licensed supplier carries CfD and Capacity Market charges; the 2 MWh time-matched within the half-hour is exempt.'
+      caption: 'Only the 1 MWh of top-up from the grid supplier carries the national charges; the 2 MWh made and used on site in the same half hour is treated as local, and skips them.'
     }
   };
 
