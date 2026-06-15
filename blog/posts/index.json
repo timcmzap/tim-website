@@ -7,18 +7,18 @@
       "energy",
       "interactive"
     ],
-    "excerpt": "A century of UK electricity meters as an interactive timeline and card game from the spinning disc to SMETS2, and what Market-wide Half-Hourly Settlement means for each of them.",
+    "excerpt": "A century of UK electricity meters as an interactive timeline and card game, from the spinning disc to SMETS2, and what Market-wide Half-Hourly Settlement means for each meter.",
     "url": "meter-top-trumps.html"
   },
   {
     "slug": "p442-flow",
-    "title": "Why local clean power couldn't find a local buyer — until P442",
+    "title": "Why local clean power couldn't find a local buyer (until P442)",
     "date": "2026-06-13",
     "tags": [
       "energy",
       "interactive"
     ],
-    "excerpt": "An interactive, plain-English look at P442: the small rule change that finally lets a local wind project sell power straight to a nearby business.",
+    "excerpt": "An interactive, plain-English look at P442, the small rule change that finally lets a local solar or wind project sell power straight to a nearby business.",
     "url": "p442-flow.html"
   }
 ]
